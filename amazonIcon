@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 
 var fs = require('fs'),
-blessed = require('blessed');
+    blessed = require('blessed');
 var screen = blessed.screen();
-
-fs.readFile('./amazonAscii', function(err, data){
-
-	var box = blessed.box({
+fs.readFile('./amazonAscii', function (err, data) {
+    var box = blessed.box({
         top: 'center',
         left: 'center',
         style: {
@@ -17,11 +15,9 @@ fs.readFile('./amazonAscii', function(err, data){
         height: 20,
         content: String(data)
     });
-
-	screen.append(box);
-	screen.render();
+    screen.append(box);
+    screen.render();
 });
-
 var background = blessed.box({
     top: 0,
     left: 0,
@@ -31,10 +27,8 @@ var background = blessed.box({
         bg: 'black'
     }
 });
-
 screen.append(background);
-
 // Quit on Escape, q, or Control-C.
-screen.key(['escape', 'q', 'C-c'], function(ch, key) {
-  return process.exit(0);
+screen.key(['escape', 'q', 'C-c'], function (ch, key) {
+    return process.exit(0);
 });
