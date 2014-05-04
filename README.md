@@ -13,7 +13,7 @@
 
 ### Static Methods
  
-```
+``` js
 queryProducts(searchterm, onSuccess[, onError]);
 queryProducts(options);
 ```
@@ -36,7 +36,7 @@ This will only give you `Product`s with `Title`and `ASIN` Attributes set. To get
 
 ---
 
-```
+``` js
 loadProduct(product, onSuccess[, onError]);
 loadProduct(asin, onSuccess[, onError]);
 loadProduct(options);
@@ -58,7 +58,7 @@ Class to store Product Information
 
 #### Constructors
 
-```
+``` js
 Product(asin, title);
 ```
 
@@ -67,7 +67,7 @@ Product(asin, title);
 
 #### Methods
 
-```
+``` js
 loadProduct(onSuccess[, onError]);
 loadProduct(options);
 ```
@@ -104,12 +104,12 @@ Class to Store multiple Products and allow easy Access to the Attributes
 
 #### Constructors
 
-```
+``` js
 ProductList();
 ```
 
 #### Methods
-```
+``` js
 getProductInfo(fieldName);
 ```
 Returns an Array only containing the specified attribute of all products
@@ -121,7 +121,7 @@ Returns an Array only containing the specified attribute of all products
 
 ---
 
-```
+``` js
 getProductTitles();
 ```
 Returns an Array containing all Product Titles
@@ -132,7 +132,7 @@ Returns an Array containing all Product Titles
 
 ---
 
-```
+``` js
 getProductAsins();
 ```
 Returns an Array containing all Product ASINs
