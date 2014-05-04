@@ -25,7 +25,7 @@
 var api = require("./apaapi");
 // console.dir(api);
 api.queryProducts({
-    searchterm: "car",
+    searchterm: "how i met your mother",
     onSuccess: function (results) {
         results.forEach(function (entry) {
             entry.loadProduct(function (result) {
