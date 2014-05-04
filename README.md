@@ -1,15 +1,18 @@
-#R.E.T.R.O.
+# R.E.T.R.O.
 
-##Widgets
+## Widgets
 
-###Commandbar
+### Commandbar
 `setCommands()` blabla
 
 `drawCommands()` test  
 
 - hallo
 
-##Amazon API
+## Amazon API
+
+### Static Methods
+ 
 ```
 queryProducts(searchterm, onSuccess[, onError]);
 queryProducts(options);
@@ -24,6 +27,116 @@ is an object array.
 **Parameters**
 
 - String `searchterm`: the string to search for
-- Function `onSuccess`: callback with a `ProductsList` object as first paremeter 
+- Function `onSuccess`: callback with a `ProductsList` object as first parameter 
 - Function `[onError]`: callback with an error message String as first parameter
-- String `[searchIndex]`: the Amazon [search index](http://docs.aws.amazon.com/AWSECommerceService/latest/DG/DESearchIndexParamForItemsearch.html) to query 
+- String `[searchIndex]`: the Amazon [search index](http://docs.aws.amazon.com/AWSECommerceService/latest/DG/DESearchIndexParamForItemsearch.html) to query.
+- `return`: `undefined`
+
+This will only give you `Product`s with `Title`and `ASIN` Attributes set. To get a fully loaded Product, call `Product.loadProduct()`. To check wether or not a Product is already loaded, check the attribute `Product.fullyLoaded`.
+
+---
+
+```
+loadProduct(product, onSuccess[, onError]);
+loadProduct(asin, onSuccess[, onError]);
+loadProduct(options);
+```
+
+Queries for all available Information on Amazon.
+
+**Parameters**
+
+- Product `product`: an instance of Product with the ASIN set
+- String `asin`: the ASIN to query
+- Function `onSuccess`: callback with a fully loaded `Product` object as first parameter 
+- Function `[onError]`: callback with an error message String as first parameter
+- `return`: `undefined`
+
+### Product Class
+
+Class to store Product Information
+
+#### Constructors
+
+```
+Product(asin, title);
+```
+
+- String `asin`: The ASIN of the Product
+- String `title`:The Title of the Product
+
+#### Methods
+
+```
+loadProduct(onSuccess[, onError]);
+loadProduct(options);
+```
+
+Queries the full Information of the Product
+
+**Parameters**
+
+- Function `onSuccess`: callback with a fully loaded `Product` object as first parameter 
+- Function `[onError]`: callback with an error message String as first parameter
+- `return`: `undefined`
+
+#### Instance Variables
+
+- String `ASIN`: The ASIN of the Product
+- String `Title`: The Title of the Product
+- Boolean `fullyLoaded`: Whether the Product is fully Loaded by `loadProduct` or not
+- String `[Manufacturer]`: The Manufacturer of the Product
+- String `[ReleaseDate]`: The ReleaseDate of the Product
+- String `[ProductGroup]`: The ProductGroup of the Product
+- String `[Creator]`: The Creator of the Product
+- Array `[Creator]`: All Creators of the Product
+- String `[Feature]`: The Feature of the Product
+- Array `[Feature]`: All Features of the Product
+- String `[Price]`: The Price of the Product
+- String `[EditorialReviews]`: The EditorialReview of the Product
+- Array `[EditorialReviews]`: All EditorialReviews of the Product
+
+### ProductsList Class
+
+Class to Store multiple Products and allow easy Access to the Attributes
+
+#### Prototypes: `Array`
+
+#### Constructors
+
+```
+ProductList();
+```
+
+#### Methods
+```
+getProductInfo(fieldName);
+```
+Returns an Array only containing the specified attribute of all products
+
+**Parameters**
+
+- String `fieldName`: The `Product` field name to get
+- `return`: `Array`
+
+---
+
+```
+getProductTitles();
+```
+Returns an Array containing all Product Titles
+
+**Parameters**
+
+- `return`: `Array`
+
+---
+
+```
+getProductAsins();
+```
+Returns an Array containing all Product ASINs
+
+**Parameters**
+
+- `return`: `Array`
