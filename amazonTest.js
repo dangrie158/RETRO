@@ -22,21 +22,13 @@
 //     console.log(JSON.stringify(results.ItemSearchResponse.Items[0].Item[0], null, '\t'));
 // });
 
-var api = require("./apaapi");
+var retro = require('./lib/retro'),
+    amazon = retro.API;
 // console.dir(api);
-api.queryProducts({
-    searchterm: "how i met your mother",
-    onSuccess: function (results) {
-        results.forEach(function (entry) {
-            entry.loadProduct(function (result) {
-                    console.log(JSON.stringify(result, null, '\t'))
-                },
-                function (message) {
-                    console.error(message)
-                });
-        });
+amazon.queryProducts({
+    searchterm: 'car',
+    onSuccess: function (entry) {
+        console.log(entry.titles);
     },
-    onError: function (message) {
-        console.error(message);
-    }
+    searchIndex: 'All'
 });

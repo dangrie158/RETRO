@@ -121,22 +121,6 @@ Returns an Array only containing the specified attribute of all products
 
 ---
 
-```
-getProductTitles();
-```
-Returns an Array containing all Product Titles
-
-**Parameters**
-
-- `return`: `Array`
-
----
-
-```
-getProductAsins();
-```
-Returns an Array containing all Product ASINs
-
-**Parameters**
-
-- `return`: `Array`
+#### Getters
+- `Titles`: returns an Array of all Product Titles
+- `ASINs`: returns an Array of all Product ASINs
