@@ -119,8 +119,6 @@ Returns an Array only containing the specified attribute of all products
 - String `fieldName`: The `Product` field name to get
 - `return`: `Array`
 
----
-
 #### Getters
 - `Titles`: returns an Array of all Product Titles
 - `ASINs`: returns an Array of all Product ASINs
