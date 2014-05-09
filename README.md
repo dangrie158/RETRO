@@ -139,21 +139,6 @@ Queries the full Information of the product
 
 #### Instance Variables
 
-<<<<<<< HEAD
-- String `ASIN`: The ASIN of the product
-- String `Title`: The Title of the product
-- Boolean `fullyLoaded`: Whether the product is fully Loaded by `loadProduct` or not
-- String `[Manufacturer]`: The manufacturer of the product
-- String `[ReleaseDate]`: The release date of the product
-- String `[ProductGroup]`: The product group of the product
-- String `[Creator]`: The creator of the product
-- Array `[Creator]`: All creators of the product
-- String `[Feature]`: The feature of the product
-- Array `[Feature]`: All features of the product
-- String `[Price]`: The price of the product
-- String `[EditorialReviews]`: The editorial review of the product
-- Array `[EditorialReviews]`: All editorial reviews of the product
-=======
 - String `ASIN`: The ASIN of the Product
 - String `Title`: The Title of the Product
 - Boolean `fullyLoaded`: Whether the Product is fully Loaded by `loadProduct` or not
@@ -165,7 +150,6 @@ Queries the full Information of the product
 - Array `[Feature]`: All Features of the Product
 - String `[Price]`: The Price of the Product
 - Array `[EditorialReviews]`: All EditorialReviews of the Product
->>>>>>> FETCH_HEAD
 
 ### ProductsList Class
 
