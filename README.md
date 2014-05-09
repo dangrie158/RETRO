@@ -86,6 +86,7 @@ is an object array.
 - Function `onSuccess`: callback with a `ProductsList` object as first parameter 
 - Function `[onError]`: callback with an error message String as first parameter
 - String `[searchIndex]`: the Amazon [search index](http://docs.aws.amazon.com/AWSECommerceService/latest/DG/DESearchIndexParamForItemsearch.html) to query.
+- Number `page`: The Item Page to query
 - `return`: `undefined`
 
 This will only give you `Product`s with `Title`and `ASIN` attributes set. To get a fully loaded product, call `Product.loadProduct()`. To check wether or not a product is already loaded, check the attribute `Product.fullyLoaded`.
