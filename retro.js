@@ -1,18 +1,21 @@
 var blessed = require('blessed'),
 	retro = require('./lib/retro'),
 	widgets = retro.Widgets,
-	amazon = retro.API,
-	screen = blessed.screen();
+	amazon = retro.API;
 
-screen.append(blessed.line());
+// screen.append(blessed.line());
+
 
 var array = ['{Q}uit', '{N}ext', '{ESC} Cancel', '{RET} Quantity'];
+var title = widgets.title({
+	content: 'Hallo du da'
+});
 var commandbar = widgets.commandbar({
     commands: array
 });
 
 var content = blessed.box({
-    top: 0,
+    top: 1,
     left: 0,
     width: '100%',
     height: '100%',
@@ -22,14 +25,13 @@ var content = blessed.box({
         bg: 'black'
     }
 });
+var screen = new widgets.screen();
+screen.title = title;
 
-// Quit on Escape, q, or Control-C.
-screen.key(['escape', 'C-c'], function (ch, key) {
-    return process.exit(0);
+screen.commandbar = commandbar;
+
+widgets.screen.switchScreen(screen);
+
+widgets.screen.key(['o'], function(){
+	screen.showPopup();
 });
-
-// commandbar.setCommands(array);
-screen.append(content);
-screen.append(commandbar);
-
-screen.render();

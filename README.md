@@ -2,6 +2,125 @@
 
 ## Widgets
 
+### Screen Class
+
+The Screen class creates the visuals of our terminal application.
+
+For every Screen object the `title`, `content` and `commandbar` objects have to be set.
+
+
+#### Constructors
+
+```
+screen();
+```
+Creates a new screen object.
+
+#### Methods
+
+```
+setTitle(title);
+```
+Sets the title of the titlebar.
+
+**Parameters**
+
+- String `title`
+
+____
+
+```
+switchScreen(newScreen)
+```
+Removes every element from the screen and appends the elements of a new Screen to it.
+
+Before this method can be called the `title`, `content` and `commandbar` of the new screen have to be set.
+
+If you create your first screen you also have to call this method.
+
+**Parameters**
+
+- Screen `newScreen`
+
+____
+
+```
+key(keylist, callback)
+```
+Creates a keyboard shortcut for the screen.
+
+**Parameters**
+
+- String-Array `keylist`
+- Function `callback`
+
+____
+
+
+```
+setPopup(popup)
+```
+Sets the popup
+
+**Parameters**
+
+- Object `popup`
+
+____
+
+```
+showPopup()
+```
+Displays the set popup and sets the focus to it. It also grays out the elements in the background.
+
+____
+
+```
+hidePopup()
+```
+Hides the set popup and colors the content elements again.
+
+####Examples####
+
+```
+var screen = new screen(),
+	commandbar = new commandbar();
+
+screen.title = 'Hello title';
+screen.commandbar = commandbar;
+
+// initially draw the screen
+screen.switchScreen(screen);
+
+screen.key(['o'], function(){
+	screen.showPopup();
+})
+
+```
+
+
+### Title Class
+
+#### Prototypes: `blessed.box`
+
+#### Constructors
+
+```
+Title([options])
+```
+Creates a new title object
+
+- Object `[options]`: Every option for a blessed.box can still be set. By default the title has a height of 1 line, width of 100% and is pinned to the top.
+
+#### Examples
+
+```
+var title = title({
+	content: 'Sample String'
+});
+title = 'New String';
+```
+
 ### Commandbar Class
 
 
@@ -15,7 +134,6 @@ commandbar([options])
 Creates a new commandbar object
 
 - Object `[options]`: Every option for a blessed.box can still be set. By default the commandbar has a height of 1 line, width of 100% and is pinned to the bottom.
-
 
 #### Methods
 
