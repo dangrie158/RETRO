@@ -1,12 +1,11 @@
 var blessed = require('blessed'),
-	retro = require('./lib/retro'),
-	widgets = retro.Widgets,
-	amazon = retro.API;
-
+    retro = require('./lib/retro'),
+    widgets = retro.Widgets,
+    amazon = retro.API;
 
 var array = ['{Q}uit', '{N}ext', '{ESC} Cancel', '{RET} Quantity'];
 var title = widgets.title({
-	content: 'Hallo du da'
+    content: 'Hallo du da'
 });
 var commandbar = widgets.commandbar({
     commands: array
@@ -31,6 +30,56 @@ var test = blessed.box({
     height: '100%',
     content: 'TEST CONTENT'
 })
+
+var popup = blessed.form({
+    top: 'center',
+    left: 'center',
+    width: '50%',
+    height: 3,
+    align: 'center',
+    keys: true,
+    content: 'No content set!',
+    style: {
+        fg: 'black',
+        bg: 'red',
+        border: {
+            fg: 'red'
+        }
+    },
+
+});
+
+var input = blessed.textbox({
+    parent: popup,
+    top: 2,
+    inputOnFocus: true,
+    left: 0,
+    width: '100%',
+    height: 1,
+    keys: true,
+    style: {
+        fg: 'red',
+        bg: 'white',
+        focus: {
+            bg: 'red'
+        },
+    }
+});
+
+blessed.button({
+    parent: popup,
+    top: 3,
+    inputOnFocus: true,
+    left: 'center',
+    shrink: true,
+    content: 'submit',
+    height: 1,
+    keys: true,
+    style: {
+        fg: 'red',
+        bg: 'white'
+    }
+});
 
 // TODO: lists still throw an error, even if a blessed.line() is appended under screen.js
 // var list = blessed.list({
@@ -63,16 +112,16 @@ var test = blessed.box({
 // });
 
 var input = blessed.textarea({
-  parent: screen,
-  // Possibly support:
-  // align: 'center',
-  bg: 'blue',
-  fg: 'red',
-  height: '50%',
-  width: '50%',
-  top: 'center',
-  left: 'center',
-  content:'enter text',
+    parent: screen,
+    // Possibly support:
+    // align: 'center',
+    bg: 'blue',
+    fg: 'red',
+    height: '50%',
+    width: '50%',
+    top: 'center',
+    left: 'center',
+    content: 'enter text',
 });
 
 var screen = new widgets.screen();
@@ -80,9 +129,15 @@ var screen = new widgets.screen();
 screen.title = title;
 screen.content = test;
 screen.commandbar = commandbar;
+screen.popup = popup;
 
 widgets.screen.switchScreen(screen);
 
-widgets.screen.key(['o'], function(){
-	screen.showPopup();
+widgets.screen.key(['o'], function () {
+    screen.showPopup();
+    input.focus();
+});
+
+widgets.screen.key(['c'], function () {
+    screen.hidePopup();
 });
