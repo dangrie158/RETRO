@@ -1,50 +1,60 @@
 var blessed = require('blessed'),
     retro = require('./lib/retro'),
     widgets = retro.Widgets,
-    amazon = retro.API;
+    amazon = retro.API,
+    fs = require('fs');
 
-var array = ['{Q}uit', '{N}ext', '{ESC} Cancel', '{RET} Quantity'];
+/*
+ * DUMMY CONTENT
+ */
+var array = ['{S}earch', '{B}rowse', '{C}art', '{Q}uit'];
 var title = widgets.title({
-    content: 'Hallo du da'
+    content: 'AMAZON - SHOPPING CLIENT'
 });
 var commandbar = widgets.commandbar({
     commands: array
 });
 
 var content = blessed.box({
-    top: 1,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    content: 'test',
+    top: 'center',
+    left: 'center',
     style: {
-        fg: 'green',
-        bg: 'black'
-    }
+        bg: 'black',
+        fg: 'lightgreen'
+    },
+    width: 31,
+    height: 20
 });
 
-var test = blessed.box({
-    top: 1,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    content: 'TEST CONTENT'
-})
+fs.readFile('./amazonAscii', function (err, data) {
+    content.setContent(String(data));
+    widgets.screen.render();
 
+});
+
+/*
+ * /DUMMY CONTENT
+ */
+
+/*
+ * POPUP STUFF
+ */
 var popup = blessed.form({
     top: 'center',
     left: 'center',
     width: '50%',
-    height: 3,
+    height: 6,
+    label: 'ITEM SEARCH',
     align: 'center',
     keys: true,
-    content: 'No content set!',
+    content: '',
+    border: {
+        type: 'line',
+        fg: 'lightgreen'
+    },
     style: {
-        fg: 'black',
-        bg: 'red',
-        border: {
-            fg: 'red'
-        }
+        fg: 'lightgreen',
+        bg: 'black'
     },
 
 });
@@ -53,33 +63,40 @@ var input = blessed.textbox({
     parent: popup,
     top: 2,
     inputOnFocus: true,
-    left: 0,
-    width: '100%',
+    left: 'center',
+    width: '80%',
+    label: 'Searchterm',
     height: 1,
     keys: true,
     style: {
-        fg: 'red',
+        fg: 'black',
         bg: 'white',
         focus: {
-            bg: 'red'
-        },
+            bg: 'lightgreen'
+        }
     }
 });
 
 blessed.button({
     parent: popup,
-    top: 3,
-    inputOnFocus: true,
+    top: 4,
     left: 'center',
-    shrink: true,
+    shrink: false,
     content: 'submit',
     height: 1,
     keys: true,
     style: {
-        fg: 'red',
-        bg: 'white'
+        fg: 'black',
+        bg: 'white',
+        focus: {
+            bg: 'lightgreen'
+        }
     }
 });
+
+/*
+ * /POPUP STUFF
+ */
 
 // TODO: lists still throw an error, even if a blessed.line() is appended under screen.js
 // var list = blessed.list({
@@ -111,33 +128,19 @@ blessed.button({
 //     }
 // });
 
-var input = blessed.textarea({
-    parent: screen,
-    // Possibly support:
-    // align: 'center',
-    bg: 'blue',
-    fg: 'red',
-    height: '50%',
-    width: '50%',
-    top: 'center',
-    left: 'center',
-    content: 'enter text',
-});
-
 var screen = new widgets.screen();
 
 screen.title = title;
-screen.content = test;
+screen.content = content;
 screen.commandbar = commandbar;
 screen.popup = popup;
 
 widgets.screen.switchScreen(screen);
 
-widgets.screen.key(['o'], function () {
+widgets.screen.key(['s'], function () {
     screen.showPopup();
     input.focus();
-});
-
-widgets.screen.key(['c'], function () {
-    screen.hidePopup();
+    widgets.screen.onceKey(['escape'], function() {
+        screen.hidePopup();
+    })
 });
