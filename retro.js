@@ -8,7 +8,7 @@ var retro = require('./lib/retro'),
 var startpageCntl = function ($scope, $screen) {
     fs.readFile('./amazonAscii', function (err, data) {
         scope.content.setContent(String(data));
-        widgets.screen.render();
+        $screen.render();
     });
 
     widgets.screen.key(['s'], function () {
@@ -19,8 +19,34 @@ var startpageCntl = function ($scope, $screen) {
         })
     });
 
+    $scope.submitButton.on('press', function () {
+        $scope.popup.submit();
+    });
+
+    $scope.popup.on('submit', function () {
+        $scope.popup.removeAllListeners(['submit']);
+        RouteProvider.navigateTo('search/searchTerm=' + $scope.input.value);
+    });
+
     widgets.screen.key(['k'], function () {
-        RouteProvider.navigateTo('erroras');
+        RouteProvider.navigateTo('errorPageDiesNichGibt');
+    });
+}
+
+var serchResultCntl = function ($scope, $screen, routeParams) {
+    $screen.setTitle('AMAZON - SEARCH RESULTS - ' + routeParams.searchTerm);
+    $screen.render();
+
+    widgets.screen.key(['n'], function () {
+
+    });
+
+    widgets.screen.key(['p'], function () {
+
+    });
+
+    widgets.screen.key(['b'], function () {
+        RouteProvider.goBack();
     });
 }
 
@@ -30,7 +56,6 @@ var errorCntrl = function ($scope, $screen) {
     });
 }
 
-
 //We extend the genearl Route Provider to navigate to where we want it
 RouteProvider.loadPage = function (newPath, routeParams) {
     var config;
@@ -39,25 +64,37 @@ RouteProvider.loadPage = function (newPath, routeParams) {
     case 'start':
         config = {
             controller: startpageCntl,
-            view: require('./views/startpage')
+            view: './views/startpage'
+        }
+        break;
+    case 'search':
+        config = {
+            controller: serchResultCntl,
+            view: './views/productSearch'
         }
         break;
     default:
         config = {
             controller: errorCntrl,
-            view: require('./views/error')
+            view: './views/error'
         }
         break;
     }
+    
+    //We do not want caching in the views so we delete 
+    //Any cached entry
+    delete require.cache[require.resolve(config.view)];
+    view = require(config.view);
+
     var screen = new widgets.screen();
-    screen.title = config.view.title;
-    screen.content = config.view.content;
-    screen.commandbar = config.view.commandbar;
-    screen.popup = config.view.popup;
+    screen.title = view.title;
+    screen.content = view.content;
+    screen.commandbar = view.commandbar;
+    screen.popup = view.popup;
 
     widgets.screen.switchScreen(screen);
 
-    config.controller(config.view, screen);
+    config.controller(view, screen, routeParams);
 
     return newPath;
 }

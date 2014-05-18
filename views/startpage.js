@@ -66,7 +66,7 @@ scope.input = blessed.textbox({
     }
 });
 
-blessed.button({
+scope.submitButton = blessed.button({
     parent: scope.popup,
     top: 4,
     left: 'center',
