@@ -10,7 +10,7 @@ scope.title = widgets.title({
     content: 'ERROR - Route not found'
 });
 scope.commandbar = widgets.commandbar({
-    commands: ['{B}ack']
+    commands: ['', '', '', '{B}ack']
 });
 
 scope.content = blessed.box({
