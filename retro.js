@@ -37,12 +37,30 @@ var startpageCntl = function ($scope, $screen) {
     });
 }
 
-var serchResultCntl = function ($scope, $screen, routeParams) {
+var productDetailCntl = function ($scope, $screen, routeParams){
+    amazon.loadProduct({
+        asin: routeParams.asin,
+        onSuccess: function(productDetail){
+            var setTitle = function(){
+                var title = productDetail.Title.substr(0, ($screen.width - 6));
+                if(productDetail.Title.length > ($screen.width-6)){
+                    title += '...';
+                }
+                $screen.setTitle(title);
+            };
+            setTitle();
+            $screen.render();
+            widgets.screen.onceKey(['b'], RouteProvider.goBack);
+            $scope.title.on('resize', setTitle);
+        }
+    });
+}
+
+var searchResultCntl = function ($scope, $screen, routeParams) {
     var page = (~~routeParams.page) || 1;
 
     //TODO: for reusability
     var searchIndex = routeParams.searchIndex;
-    console.log(searchIndex);
 
     //we only can get 5 pages if we search in the 'all' category
     var maxpages = searchIndex ? 10 : 5;
@@ -95,6 +113,9 @@ var serchResultCntl = function ($scope, $screen, routeParams) {
 
             //Register this here so we cant go back and then the result comes in
             widgets.screen.key(['b'], RouteProvider.goBack);
+            $scope.content.on('select', function(data, index){
+                RouteProvider.navigateTo('detail/asin=' +result.ASINs[index]);
+            });
         },
         onError: function (errorMessage) {
 
@@ -129,8 +150,14 @@ RouteProvider.loadPage = function (newPath, routeParams) {
         break;
     case 'search':
         config = {
-            controller: serchResultCntl,
+            controller: searchResultCntl,
             view: './views/productSearch'
+        }
+        break;
+    case 'detail':
+        config = {
+            controller: productDetailCntl,
+            view: './views/productDetail'
         }
         break;
     default:
