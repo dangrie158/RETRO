@@ -201,10 +201,10 @@ is an object array.
 **Parameters**
 
 - String `searchterm`: the string to search for
-- Function `onSuccess`: callback with a `ProductsList` object as first parameter 
+- Function `onSuccess`: callback with a `ProductsList` object as first parameter and the Number of total Pages as second Argument. **NOTE**: As specified by Amazon you can only get the first 10 Pages.
 - Function `[onError]`: callback with an error message String as first parameter
+- Number `[page]`: The Page to query **NOTE** if no `searchIndex` is specified amazon will not allow queries for pages > 5 and if a `searchIndex` is specified, amazon will respond to no higher than 10
 - String `[searchIndex]`: the Amazon [search index](http://docs.aws.amazon.com/AWSECommerceService/latest/DG/DESearchIndexParamForItemsearch.html) to query.
-- Number `page`: The Item Page to query
 - `return`: `undefined`
 
 This will only give you `Product`s with `Title`and `ASIN` attributes set. To get a fully loaded product, call `Product.loadProduct()`. To check wether or not a product is already loaded, check the attribute `Product.fullyLoaded`.

@@ -24,63 +24,18 @@ scope.content = blessed.box({
     height: 20
 });
 
-
 /*
  * POPUP STUFF
  */
-scope.popup = blessed.form({
-    top: 'center',
-    left: 'center',
-    width: '50%',
-    height: 6,
+scope.searchPopup = retro.Widgets.Popups.InputPopup({
     label: 'ITEM SEARCH',
-    align: 'center',
-    keys: true,
-    content: '',
-    border: {
-        type: 'line',
-        fg: 'lightgreen'
-    },
-    style: {
-        fg: 'lightgreen',
-        bg: 'black'
-    },
-
+    action: 'search'
+});
+scope.closePopup = retro.Widgets.Popups.ConfirmPopup({
+    label: 'ARE YOU SURE',
+    content: 'You have items in your cart. If you exit now all Items will be lost'
 });
 
-scope.input = blessed.textbox({
-    parent: scope.popup,
-    top: 2,
-    inputOnFocus: true,
-    left: 'center',
-    width: '80%',
-    label: 'Searchterm',
-    height: 1,
-    keys: true,
-    style: {
-        fg: 'black',
-        bg: 'white',
-        focus: {
-            bg: 'lightgreen'
-        }
-    }
-});
-
-scope.submitButton = blessed.button({
-    parent: scope.popup,
-    top: 4,
-    left: 'center',
-    shrink: false,
-    content: 'submit',
-    height: 1,
-    keys: true,
-    style: {
-        fg: 'black',
-        bg: 'white',
-        focus: {
-            bg: 'lightgreen'
-        }
-    }
-});
+scope.popup = scope.searchPopup;
 
 module.exports = scope;

@@ -6,54 +6,114 @@ var retro = require('./lib/retro'),
     Route;
 
 var startpageCntl = function ($scope, $screen) {
-    fs.readFile('./amazonAscii', function (err, data) {
+    fs.readFile(require('path').resolve(__dirname, './amazonAscii'), function (err, data) {
         scope.content.setContent(String(data));
         $screen.render();
     });
 
     widgets.screen.key(['s'], function () {
         $screen.showPopup();
-        $scope.input.focus();
         widgets.screen.onceKey(['escape'], function () {
             $screen.hidePopup();
         })
     });
 
-    $scope.submitButton.on('press', function () {
-        $scope.popup.submit();
-    });
-
-    $scope.popup.on('submit', function () {
-        $scope.popup.removeAllListeners(['submit']);
-        RouteProvider.navigateTo('search/searchTerm=' + $scope.input.value);
+    $scope.popup.once('submit', function () {
+        RouteProvider.navigateTo('search/searchterm=' + $scope.popup.input.value);
     });
 
     widgets.screen.key(['k'], function () {
         RouteProvider.navigateTo('errorPageDiesNichGibt');
     });
+
+    widgets.screen.key(['C-c', 'q'], function (ch, key) {
+        $screen.popup = $scope.closePopup;
+        $screen.showPopup();
+        $scope.closePopup.once('submit', process.exit);
+        $scope.closePopup.once('cancel', function(){
+            $screen.hidePopup();
+            $screen.popup = $scope.searchPopup;
+        });
+    });
 }
 
 var serchResultCntl = function ($scope, $screen, routeParams) {
-    $screen.setTitle('AMAZON - SEARCH RESULTS - ' + routeParams.searchTerm);
+    var page = (~~routeParams.page) || 1;
+
+    //TODO: for reusability
+    var searchIndex = routeParams.searchIndex;
+    console.log(searchIndex);
+
+    //we only can get 5 pages if we search in the 'all' category
+    var maxpages = searchIndex ? 10 : 5;
+
+    $scope.content.focus();
+    amazon.queryProducts({
+        searchterm: routeParams.searchterm,
+        page: page,
+        searchIndex: searchIndex,
+        onSuccess: function (result, totalPages) {
+            //We cant get any more pages anyway so we clamp
+            totalPages = totalPages > maxpages ? maxpages : totalPages;
+
+            $screen.setTitle('AMAZON - SEARCH RESULTS - ' + routeParams.searchterm + ' - PAGE ' + page + '/' + totalPages);
+
+            //check on wich page we are and hide the 
+            //commands according 
+            if (page >= totalPages) {
+                $scope.hideNext();
+            } else {
+                //map or navigation key
+                widgets.screen.key(['n'], function () {
+                    var nextPage = 'search' +
+                        '/searchterm=' + routeParams.searchterm +
+                        '/page=' + (~~page + 1);
+                    if (searchIndex) {
+                        nextPage += '/searchIndex=' + searchIndex;
+                    }
+                    RouteProvider.navigateTo(nextPage);
+                });
+            }
+
+            if (page <= 1) {
+                $scope.hidePrevious();
+            } else {
+                widgets.screen.key(['p'], function () {
+                    var previousPage = 'search' +
+                        '/searchterm=' + routeParams.searchterm +
+                        '/page=' + (~~page - 1);
+                    if (searchIndex) {
+                        nextPage += '/searchIndex=' + searchIndex;
+                    }
+                    RouteProvider.navigateTo(previousPage);
+                });
+            }
+
+            titles = result.Titles;
+            $scope.content.setItems(titles);
+            $screen.render();
+
+            //Register this here so we cant go back and then the result comes in
+            widgets.screen.key(['b'], RouteProvider.goBack);
+        },
+        onError: function (errorMessage) {
+
+            $screen.showPopup();
+            $screen.popup.content = errorMessage;
+            $screen.render();
+            widgets.screen.onceKey(['b'], RouteProvider.goBack);
+        }
+    });
+
     $screen.render();
 
-    widgets.screen.key(['n'], function () {
 
-    });
-
-    widgets.screen.key(['p'], function () {
-
-    });
-
-    widgets.screen.key(['b'], function () {
-        RouteProvider.goBack();
-    });
+    $scope.popup.on('submit', RouteProvider.goBack);
 }
 
 var errorCntrl = function ($scope, $screen) {
-    widgets.screen.key(['b'], function () {
-        RouteProvider.goBack();
-    });
+    widgets.screen.key(['b'], RouteProvider.goBack);
+
 }
 
 //We extend the genearl Route Provider to navigate to where we want it
@@ -80,7 +140,7 @@ RouteProvider.loadPage = function (newPath, routeParams) {
         }
         break;
     }
-    
+
     //We do not want caching in the views so we delete 
     //Any cached entry
     delete require.cache[require.resolve(config.view)];
