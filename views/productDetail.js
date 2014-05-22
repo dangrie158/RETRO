@@ -15,13 +15,13 @@ scope.commandbar = widgets.commandbar({
 
 scope.content = blessed.box({
     top: 1,
+    bottom: 1,
     left: 0,
     style: {
         bg: 'black',
         fg: 'lightgreen'
     },
-    width: '100%',
-    height: '90%'
+    width: '100%'
 });
 
 /*
