@@ -264,7 +264,6 @@ Queries the full Information of the product
 - String `[ReleaseDate]`: The ReleaseDate of the Product
 - String `[ProductGroup]`: The ProductGroup of the Product
 - Array `[Creator]`: All Creators of the Product
-- String `[Feature]`: The Feature of the Product
 - Array `[Feature]`: All Features of the Product
 - String `[Price]`: The Price of the Product
 - Array `[EditorialReviews]`: All EditorialReviews of the Product
