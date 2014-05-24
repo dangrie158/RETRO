@@ -7,10 +7,10 @@ var blessed = require('blessed'),
 scope = {};
 
 scope.title = widgets.title({
-    content: 'AMAZON - PRODUCT DETAIL'
+    content: 'AMAZON - CART'
 });
 scope.commandbar = widgets.commandbar({
-    commands: ['{A}dd to Cart', '', '', '{B}ack']
+    commands: ['{O}rder', '{RET}Edit quantity', '{C}lear', '{B}ack']
 });
 
 scope.content = blessed.box({
@@ -24,48 +24,36 @@ scope.content = blessed.box({
     width: '100%'
 });
 
-scope.description = blessed.box({
-    parent: scope.content,
-    scrollable: true,
-    alwaysScroll: true,
-    top: 1,
-    bottom: 1,
-    left: 0,
-    width: '65%',
+scope.content = blessed.list({
+    keys: true,
+    label: 'Search Results',
     style: {
-        bg: 'black',
-        fg: 'lightgreen'
-    },
-    scrollbar: {
-        ch: ' ',
-        track: {
-          bg: 'yellow'
+        item: {
+            //TODO: This simple fix wont work with scrolling lists, but we dont need them for now
+            height: 2
         },
-        style: {
-          inverse: true
+        selected: {
+            bg: 'lightgreen',
+            fg: 'black'
         }
     },
     border: {
         type: 'ascii',
-        fg: 'lightgreen',
-        bg: 'black'
-    }
-});
-
-scope.info = blessed.box({
-    parent: scope.content,
-    top: 1,
-    bottom: 1,
-    right: 0,
-    width: '34%',
-    style: {
         bg: 'black',
         fg: 'lightgreen'
     },
-    border: {
-        type: 'ascii',
-        fg: 'lightgreen',
-        bg: 'black'
+    width: '100%',
+    bottom: 1,
+    top: 1,
+    left: 0,
+    scrollbar: {
+        ch: ' ',
+        track: {
+            bg: 'lightgreen'
+        },
+        style: {
+            inverse: true
+        }
     }
 });
 

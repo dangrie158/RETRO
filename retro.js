@@ -3,7 +3,8 @@ var retro = require('./lib/retro'),
     amazon = retro.API,
     RouteProvider = retro.MVC.RouteProvider,
     fs = require('fs'),
-    Route;
+    Route,
+    cart = [];
 
 var startpageCntl = function ($scope, $screen) {
     fs.readFile(require('path').resolve(__dirname, './amazonAscii'), function (err, data) {
@@ -24,6 +25,10 @@ var startpageCntl = function ($scope, $screen) {
 
     widgets.screen.key(['k'], function () {
         RouteProvider.navigateTo('errorPageDiesNichGibt');
+    });
+
+    widgets.screen.key(['c'], function () {
+        RouteProvider.navigateTo('cart');
     });
 
     widgets.screen.key(['q'], function (ch, key) {
@@ -95,7 +100,7 @@ var productDetailCntl = function ($scope, $screen, routeParams){
                     });
                 }
                 if(productDetail.ReleaseDate){
-                    // TODO: Date formatieren
+                    // TODO: format date
                     var releaseDate = new Date(productDetail.ReleaseDate);
                     // releaseDate = releaseDate.format('%d.%m.%Y');
                     release += 'Erscheinungsdatum: ' + releaseDate + '\n';
@@ -116,13 +121,29 @@ var productDetailCntl = function ($scope, $screen, routeParams){
             $screen.render();
             widgets.screen.onceKey(['b'], RouteProvider.goBack);
             widgets.screen.key(['a'], function () {
+                // TODO: when to popup was closed and is reopened again the focus is missing
                 $screen.showPopup();
                 widgets.screen.onceKey(['escape'], function () {
                     $screen.hidePopup();
                 })
                 $scope.popup.on('submit', function(){
                     // TODO: add to cart & hide popup
-                    // TODO: read popup content
+                    if(isNaN($scope.popup.input.getContent())){
+                        // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
+                        $scope.popup.input.options.label = 'PLEASE ENTER A NUMBER';
+                        console.log($scope.popup.input.options.label);
+                        $screen.render();
+                    }
+                    else{
+                        cart.push({
+                            title: productDetail.Title,
+                            asin: productDetail.ASIN,
+                            price: productDetail.Price,
+                            quantity: $scope.popup.input.getContent()
+                        });
+                        $screen.hidePopup();
+                        $scope.popup.input.setContent('');
+                    }
                 })
             });
             $scope.title.on('resize', setTitle);
@@ -209,6 +230,25 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
     $scope.popup.on('submit', RouteProvider.goBack);
 }
 
+var cartCntl = function ($scope, $screen, routeParams){
+    widgets.screen.onceKey(['b'], RouteProvider.goBack);
+    $scope.content.focus();
+
+    // array tests
+    var test = [{name: 'toby', alter: 12}, {name: 'dani', alter: 13}];
+    var test2 = ['hi', 'jo'];
+
+    if(test.length > 0){
+        test.forEach(function(test){
+            $scope.content.addItem(test.name + '\n' + test.alter);
+        })
+        $screen.render();
+    }
+    else{
+        // no list items to set
+    }
+}
+
 var errorCntrl = function ($scope, $screen) {
     widgets.screen.key(['b'], RouteProvider.goBack);
 
@@ -235,6 +275,12 @@ RouteProvider.loadPage = function (newPath, routeParams) {
         config = {
             controller: productDetailCntl,
             view: './views/productDetail'
+        }
+        break;
+    case 'cart':
+        config = {
+            controller: cartCntl,
+            view: './views/cart'
         }
         break;
     default:
