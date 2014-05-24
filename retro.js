@@ -123,6 +123,9 @@ var productDetailCntl = function ($scope, $screen, routeParams){
             widgets.screen.key(['a'], function () {
                 // TODO: when to popup was closed and is reopened again the focus is missing
                 $screen.showPopup();
+                $scope.popup.once('focus', function () {
+                    $scope.popup.input.focus();
+                });
                 widgets.screen.onceKey(['escape'], function () {
                     $screen.hidePopup();
                 })
@@ -130,8 +133,8 @@ var productDetailCntl = function ($scope, $screen, routeParams){
                     // TODO: add to cart & hide popup
                     if(isNaN($scope.popup.input.getContent())){
                         // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
-                        $scope.popup.input.options.label = 'PLEASE ENTER A NUMBER';
-                        console.log($scope.popup.input.options.label);
+                        $scope.popup.input.label = 'PLEASE ENTER A NUMBER';
+                        console.log($scope.popup.input.label);
                         $screen.render();
                     }
                     else{
