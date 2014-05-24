@@ -24,12 +24,58 @@ scope.content = blessed.box({
     width: '100%'
 });
 
+scope.description = blessed.box({
+    parent: scope.content,
+    scrollable: true,
+    alwaysScroll: true,
+    top: 1,
+    bottom: 1,
+    left: 0,
+    width: '65%',
+    style: {
+        bg: 'black',
+        fg: 'lightgreen'
+    },
+    scrollbar: {
+        ch: ' ',
+        track: {
+          bg: 'yellow'
+        },
+        style: {
+          inverse: true
+        }
+    },
+    border: {
+        type: 'ascii',
+        fg: 'lightgreen',
+        bg: 'black'
+    }
+});
+
+scope.info = blessed.box({
+    parent: scope.content,
+    top: 1,
+    bottom: 1,
+    right: 0,
+    width: '34%',
+    style: {
+        bg: 'black',
+        fg: 'lightgreen'
+    },
+    border: {
+        type: 'ascii',
+        fg: 'lightgreen',
+        bg: 'black'
+    }
+});
+
 /*
  * POPUP STUFF
  */
 scope.popup = retro.Widgets.Popups.InputPopup({
     label: 'QUANTITY',
-    action: 'Add to cart'
+    action: 'Add to cart',
+    inputTitle: 'Quantity'
 });
 
 module.exports = scope;

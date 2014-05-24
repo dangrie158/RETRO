@@ -26,7 +26,7 @@ var startpageCntl = function ($scope, $screen) {
         RouteProvider.navigateTo('errorPageDiesNichGibt');
     });
 
-    widgets.screen.key(['C-c', 'q'], function (ch, key) {
+    widgets.screen.key(['q'], function (ch, key) {
         $screen.popup = $scope.closePopup;
         $screen.showPopup();
         $scope.closePopup.once('submit', process.exit);
@@ -48,10 +48,87 @@ var productDetailCntl = function ($scope, $screen, routeParams){
                 }
                 $screen.setTitle(title);
             };
+
+            var setDescription = function(){
+                $screen.render();
+                var obj = $scope.description;
+                if(productDetail.Feature){
+                    productDetail.Feature.forEach(function(entry){
+                        obj.setContent(obj.getContent() + '- ' + entry + '\n');
+                    })
+                    obj.setContent(obj.getContent() + '\n' + '---------------------' + '\n\n');
+                }
+                if(productDetail.EditorialReviews){
+                    productDetail.EditorialReviews.forEach(function(entry){
+                        obj.setContent(obj.getContent() + entry.Source + '\n');
+                        obj.setContent(obj.getContent() + entry.Content + '\n');
+                    })
+                }
+                if(obj.getContent() == ''){
+                    obj.setContent('No description found.');
+                }
+
+                widgets.screen.key('down', function(ch, key){
+                        obj.scroll(1);
+                        $screen.render();
+
+                });
+                widgets.screen.key('up', function(ch, key){
+                        obj.scroll(-1);
+                        $screen.render();
+
+                });
+                obj.focus();
+            }
+
+            var setInfo = function(){
+                    var creator = '',
+                    price = '',
+                    release = '',
+                    group = '';
+                if(productDetail.Price){
+                    price = 'Preis: ' + productDetail.Price + '\n';
+                }
+                if(productDetail.Creator){
+                    productDetail.Creator.forEach(function(entry){
+                        creator += entry.role + ': ' + entry.name + '\n';
+                    });
+                }
+                if(productDetail.ReleaseDate){
+                    // TODO: Date formatieren
+                    var releaseDate = new Date(productDetail.ReleaseDate);
+                    // releaseDate = releaseDate.format('%d.%m.%Y');
+                    release += 'Erscheinungsdatum: ' + releaseDate + '\n';
+                }
+                if(productDetail.ProductGroup){
+                    group = 'Kategorie: ' +productDetail.ProductGroup + '\n';
+                }
+
+
+                var content = price + '\n' + creator + '\n' + release + '\n' + group;
+                $scope.info.setContent(content);
+            }
+
             setTitle();
+            setDescription();
+            setInfo();
+
             $screen.render();
             widgets.screen.onceKey(['b'], RouteProvider.goBack);
+            widgets.screen.key(['a'], function () {
+                $screen.showPopup();
+                widgets.screen.onceKey(['escape'], function () {
+                    $screen.hidePopup();
+                })
+                $scope.popup.on('submit', function(){
+                    // TODO: add to cart & hide popup
+                    // TODO: read popup content
+                })
+            });
             $scope.title.on('resize', setTitle);
+
+
+            // TODO: onError einbauen
         }
     });
 }

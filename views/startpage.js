@@ -29,7 +29,8 @@ scope.content = blessed.box({
  */
 scope.searchPopup = retro.Widgets.Popups.InputPopup({
     label: 'ITEM SEARCH',
-    action: 'search'
+    action: 'search',
+    inputTitle: 'Searchterm'
 });
 scope.closePopup = retro.Widgets.Popups.ConfirmPopup({
     label: 'ARE YOU SURE',
