@@ -14,6 +14,7 @@ var startpageCntl = function ($scope, $screen) {
 
     widgets.screen.key(['s'], function () {
         $screen.showPopup();
+        $scope.popup.focusNext();
         widgets.screen.onceKey(['escape'], function () {
             $screen.hidePopup();
         })
@@ -123,13 +124,11 @@ var productDetailCntl = function ($scope, $screen, routeParams){
             widgets.screen.key(['a'], function () {
                 // TODO: when to popup was closed and is reopened again the focus is missing
                 $screen.showPopup();
-                $scope.popup.once('focus', function () {
-                    $scope.popup.input.focus();
-                });
+                $scope.popup.focusNext();
                 widgets.screen.onceKey(['escape'], function () {
                     $screen.hidePopup();
                 })
-                $scope.popup.on('submit', function(){
+                $scope.popup.once('submit', function(){
                     // TODO: add to cart & hide popup
                     if(isNaN($scope.popup.input.getContent())){
                         // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
@@ -144,9 +143,10 @@ var productDetailCntl = function ($scope, $screen, routeParams){
                             price: productDetail.Price,
                             quantity: $scope.popup.input.getContent()
                         });
+                        $scope.popup.input.clearValue();
                         $screen.hidePopup();
-                        $scope.popup.input.setContent('');
                     }
+                    // TODO: empty input is not allowed to submit
                 })
             });
             $scope.title.on('resize', setTitle);
@@ -183,7 +183,7 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
                 $scope.hideNext();
             } else {
                 //map or navigation key
-                widgets.screen.key(['n'], function () {
+                widgets.screen.key(['n', 'space'], function () {
                     var nextPage = 'search' +
                         '/searchterm=' + routeParams.searchterm +
                         '/page=' + (~~page + 1);
