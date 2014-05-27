@@ -121,6 +121,9 @@ var productDetailCntl = function ($scope, $screen, routeParams){
 
             $screen.render();
             widgets.screen.onceKey(['b'], RouteProvider.goBack);
+            widgets.screen.key(['h'], function(){
+                RouteProvider.navigateTo('start');
+            });
             widgets.screen.key(['a'], function () {
                 // TODO: when to popup was closed and is reopened again the focus is missing
                 $screen.showPopup();
@@ -214,6 +217,9 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
 
             //Register this here so we cant go back and then the result comes in
             widgets.screen.key(['b'], RouteProvider.goBack);
+            widgets.screen.key(['h'], function(){
+                RouteProvider.navigateTo('start');
+            });
             $scope.content.on('select', function(data, index){
                 RouteProvider.navigateTo('detail/asin=' +result.ASINs[index]);
             });

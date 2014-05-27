@@ -10,7 +10,7 @@ scope.title = widgets.title({
     content: 'AMAZON - PRODUCT DETAIL'
 });
 scope.commandbar = widgets.commandbar({
-    commands: ['{A}dd to Cart', '', '', '{B}ack']
+    commands: ['{A}dd to Cart', '', '{H}ome', '{B}ack']
 });
 
 scope.content = blessed.box({

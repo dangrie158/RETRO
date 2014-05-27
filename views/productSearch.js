@@ -10,7 +10,7 @@ scope.title = widgets.title({
     content: 'AMAZON - SEARCH RESULTS'
 });
 scope.commandbar = widgets.commandbar({
-    commands: ['{P}revious', '{N}ext', '', '{B}ack']
+    commands: ['{P}revious', '{N}ext', '{H}ome', '{B}ack']
 });
 
 scope.content = blessed.list({
@@ -52,11 +52,11 @@ scope.popup = retro.Widgets.Popups.ErrorPopup({
 });
 
 scope.hidePrevious = function () {
-    scope.commandbar.setCommands(['', '{N}ext', '', '{B}ack']);
+    scope.commandbar.setCommands(['', '{N}ext', '{H}ome', '{B}ack']);
 }
 
 scope.hideNext = function () {
-    scope.commandbar.setCommands(['{P}revious', '', '', '{B}ack']);
+    scope.commandbar.setCommands(['{P}revious', '', '{H}ome', '{B}ack']);
 }
 
 module.exports = scope;

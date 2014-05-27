@@ -84,66 +84,17 @@
 	"buffers":
 	[
 		{
-			"file": "views/startpage.js",
 			"settings":
 			{
-				"buffer_size": 1510,
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "lib/screen.js",
+			"file": "amazonTest.js",
 			"settings":
 			{
-				"buffer_size": 4000,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "retro.js",
-			"settings":
-			{
-				"buffer_size": 2292,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/productSearch.js",
-			"settings":
-			{
-				"buffer_size": 560,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "lib/retro.js",
-			"settings":
-			{
-				"buffer_size": 130,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "lib/mvc.js",
-			"settings":
-			{
-				"buffer_size": 58,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "lib/routeProvider.js",
-			"settings":
-			{
-				"buffer_size": 1152,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/error.js",
-			"settings":
-			{
-				"buffer_size": 561,
+				"buffer_size": 1593,
 				"line_ending": "Unix"
 			}
 		}
@@ -216,6 +167,16 @@
 	},
 	"file_history":
 	[
+		"/Users/nerd/Development/git/RETRO/RETRO.sublime-project",
+		"/Users/nerd/Development/git/blonde8/index.html",
+		"/Users/nerd/Development/git/RETRO/views/error.js",
+		"/Users/nerd/Development/git/RETRO/lib/routeProvider.js",
+		"/Users/nerd/Development/git/RETRO/lib/mvc.js",
+		"/Users/nerd/Development/git/RETRO/lib/retro.js",
+		"/Users/nerd/Development/git/RETRO/views/productSearch.js",
+		"/Users/nerd/Development/git/RETRO/views/startpage.js",
+		"/Users/nerd/Development/git/RETRO/lib/screen.js",
+		"/Users/nerd/Development/git/RETRO/retro.js",
 		"/Users/Daniel/Documents/RETRO/lib/screen.js",
 		"/Users/Daniel/Documents/RETRO/amazonAscii",
 		"/Users/Daniel/Documents/RETRO/amazonIcon",
@@ -225,10 +186,8 @@
 		"/Users/Daniel/Documents/RETRO/lib/title.js",
 		"/Users/Daniel/Documents/RETRO/tobyTest.js",
 		"/Users/Daniel/Library/Application Support/Sublime Text 3/Packages/Nodejs/Nodejs.sublime-settings",
-		"/Users/nerd/Development/git/RETRO/retro.js",
 		"/Users/nerd/Development/git/RETRO/lib/title.js",
 		"/Users/nerd/Development/git/RETRO/lib/widgets.js",
-		"/Users/nerd/Development/git/RETRO/lib/screen.js",
 		"/Users/nerd/Development/git/RETRO/lib/commandbar.js",
 		"/Users/nerd/Development/git/RETRO/lib/const.js",
 		"/Users/nerd/Development/git/Trackify/www/js/controllers.js",
@@ -260,7 +219,7 @@
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 23.0
 	},
 	"find_in_files":
 	{
@@ -320,34 +279,31 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "views/startpage.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1510,
+						"buffer_size": 0,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1203,
-								1215
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 547.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -355,208 +311,30 @@
 				},
 				{
 					"buffer": 1,
-					"file": "lib/screen.js",
+					"file": "amazonTest.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4000,
+						"buffer_size": 1593,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2396,
-								2396
+								678,
+								678
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 998.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "retro.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2292,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1709,
-								1709
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 637.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "views/productSearch.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 560,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								535,
-								535
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "lib/retro.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 130,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								127,
-								127
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "lib/mvc.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 58,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								42,
-								55
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "lib/routeProvider.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1152,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								388,
-								388
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "views/error.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 561,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								515,
-								515
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
 					"type": "text"
 				}
 			]
@@ -618,7 +396,7 @@
 		[
 			[
 				"",
-				"~/Documents/PositionTracker/PositionTracker.sublime-project"
+				"~/Development/git/blonde8/blonde8.sublime-project"
 			]
 		],
 		"width": 380.0
