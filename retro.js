@@ -120,7 +120,7 @@ var productDetailCntl = function ($scope, $screen, routeParams){
             setInfo();
 
             $screen.render();
-            widgets.screen.onceKey(['b'], RouteProvider.goBack);
+            widgets.screen.key(['b'], RouteProvider.goBack);
             widgets.screen.key(['h'], function(){
                 RouteProvider.navigateTo('start');
             });
@@ -229,7 +229,7 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
             $screen.showPopup();
             $screen.popup.content = errorMessage;
             $screen.render();
-            widgets.screen.onceKey(['b'], RouteProvider.goBack);
+            widgets.screen.key(['b'], RouteProvider.goBack);
         }
     });
 
@@ -240,7 +240,7 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
 }
 
 var cartCntl = function ($scope, $screen, routeParams){
-    widgets.screen.onceKey(['b'], RouteProvider.goBack);
+    widgets.screen.key(['b'], RouteProvider.goBack);
     $scope.content.focus();
 
     // array tests
