@@ -16,8 +16,9 @@ var startpageCntl = function ($scope, $screen) {
         $screen.showPopup();
         $scope.popup.focusNext();
         widgets.screen.onceKey(['escape'], function () {
+            $scope.popup.input.clearValue();
             $screen.hidePopup();
-        })
+        });
     });
 
     $scope.popup.once('submit', function () {
@@ -32,84 +33,149 @@ var startpageCntl = function ($scope, $screen) {
         RouteProvider.navigateTo('cart');
     });
 
+    widgets.screen.key(['b'], function () {
+        RouteProvider.navigateTo('browse');
+    });
+
     widgets.screen.key(['q'], function (ch, key) {
         $screen.popup = $scope.closePopup;
         $screen.showPopup();
         $scope.closePopup.once('submit', process.exit);
-        $scope.closePopup.once('cancel', function(){
+        $scope.closePopup.once('cancel', function () {
             $screen.hidePopup();
             $screen.popup = $scope.searchPopup;
         });
     });
 }
 
-var productDetailCntl = function ($scope, $screen, routeParams){
+var browseCntl = function ($scope, $screen, routeParams) {
+    var entriesPerPage = 20;
+
+    var page = (~~routeParams.page) || 1;
+    var allIndices = amazon.AmazonSearchIndices;
+
+    //we can show 20 items per page
+    var totalPages = Math.ceil(allIndices.length / entriesPerPage);
+    var firstEntry = entriesPerPage * (page - 1);
+    var lastEntry = firstEntry + entriesPerPage;
+
+    //calculate all our items
+    var pageItems = allIndices.slice(firstEntry, lastEntry);
+
+    $scope.content.setItems(pageItems);
+    $scope.content.focus();
+
+    if (page >= totalPages) {
+        $scope.hideNext();
+    } else {
+        //map or navigation key
+        widgets.screen.key(['n', 'space'], function () {
+            var nextPage = 'browse' +
+                '/page=' + (~~page + 1);
+            RouteProvider.navigateTo(nextPage);
+        });
+    }
+
+    if (page <= 1) {
+        $scope.hidePrevious();
+    } else {
+        widgets.screen.key(['p'], function () {
+            var previousPage = 'browse' +
+                '/page=' + (~~page - 1);
+            RouteProvider.navigateTo(previousPage);
+        });
+    }
+
+    $screen.render();
+
+    widgets.screen.key(['b'], RouteProvider.goBack);
+
+    widgets.screen.key(['h'], function () {
+        RouteProvider.navigateTo('start');
+    });
+
+    $scope.content.on('select', function (data, index) {
+        var searchIndex = allIndices[index];
+        $screen.showPopup();
+        $scope.popup.focusNext();
+        widgets.screen.onceKey(['escape'], function () {
+            //TODO: Somehow we dont get focus on the list anymore...
+            //$scope.popup.input.clearValue();
+            $screen.hidePopup();
+        })
+        $scope.popup.once('submit', function () {
+            var searchterm = $scope.popup.input.getContent();
+            RouteProvider.navigateTo('search/searchterm=' + searchterm + '/searchIndex=' + searchIndex);
+        });
+    });
+}
+
+var productDetailCntl = function ($scope, $screen, routeParams) {
     amazon.loadProduct({
         asin: routeParams.asin,
-        onSuccess: function(productDetail){
-            var setTitle = function(){
+        onSuccess: function (productDetail) {
+            var setTitle = function () {
                 var title = productDetail.Title.substr(0, ($screen.width - 6));
-                if(productDetail.Title.length > ($screen.width-6)){
+                if (productDetail.Title.length > ($screen.width - 6)) {
                     title += '...';
                 }
                 $screen.setTitle(title);
             };
 
-            var setDescription = function(){
+            var setDescription = function () {
                 $screen.render();
                 var obj = $scope.description;
-                if(productDetail.Feature){
-                    productDetail.Feature.forEach(function(entry){
+                if (productDetail.Feature) {
+                    productDetail.Feature.forEach(function (entry) {
                         obj.setContent(obj.getContent() + '- ' + entry + '\n');
                     })
                     obj.setContent(obj.getContent() + '\n' + '---------------------' + '\n\n');
                 }
-                if(productDetail.EditorialReviews){
-                    productDetail.EditorialReviews.forEach(function(entry){
+                if (productDetail.EditorialReviews) {
+                    productDetail.EditorialReviews.forEach(function (entry) {
                         obj.setContent(obj.getContent() + entry.Source + '\n');
                         obj.setContent(obj.getContent() + entry.Content + '\n');
                     })
                 }
-                if(obj.getContent() == ''){
+                if (obj.getContent() == '') {
                     obj.setContent('No description found.');
                 }
 
-                widgets.screen.key('down', function(ch, key){
-                        obj.scroll(1);
-                        $screen.render();
+                widgets.screen.key('down', function (ch, key) {
+                    obj.scroll(1);
+                    $screen.render();
 
                 });
-                widgets.screen.key('up', function(ch, key){
-                        obj.scroll(-1);
-                        $screen.render();
+                widgets.screen.key('up', function (ch, key) {
+                    obj.scroll(-1);
+                    $screen.render();
 
                 });
                 obj.focus();
             }
 
-            var setInfo = function(){
-                    var creator = '',
+            var setInfo = function () {
+                var creator = '',
                     price = '',
                     release = '',
                     group = '';
-                if(productDetail.Price){
+                if (productDetail.Price) {
                     price = 'Preis: ' + productDetail.Price + '\n';
                 }
-                if(productDetail.Creator){
-                    productDetail.Creator.forEach(function(entry){
+                if (productDetail.Creator) {
+                    productDetail.Creator.forEach(function (entry) {
                         creator += entry.role + ': ' + entry.name + '\n';
                     });
                 }
-                if(productDetail.ReleaseDate){
+                if (productDetail.ReleaseDate) {
                     // TODO: format date
                     var releaseDate = new Date(productDetail.ReleaseDate);
                     // releaseDate = releaseDate.format('%d.%m.%Y');
                     release += 'Erscheinungsdatum: ' + releaseDate + '\n';
                 }
-                if(productDetail.ProductGroup){
-                    group = 'Kategorie: ' +productDetail.ProductGroup + '\n';
+                if (productDetail.ProductGroup) {
+                    group = 'Kategorie: ' + productDetail.ProductGroup + '\n';
                 }
-
 
                 var content = price + '\n' + creator + '\n' + release + '\n' + group;
                 $scope.info.setContent(content);
@@ -121,7 +187,7 @@ var productDetailCntl = function ($scope, $screen, routeParams){
 
             $screen.render();
             widgets.screen.key(['b'], RouteProvider.goBack);
-            widgets.screen.key(['h'], function(){
+            widgets.screen.key(['h'], function () {
                 RouteProvider.navigateTo('start');
             });
             widgets.screen.key(['a'], function () {
@@ -131,15 +197,14 @@ var productDetailCntl = function ($scope, $screen, routeParams){
                 widgets.screen.onceKey(['escape'], function () {
                     $screen.hidePopup();
                 })
-                $scope.popup.once('submit', function(){
+                $scope.popup.once('submit', function () {
                     // TODO: add to cart & hide popup
-                    if(isNaN($scope.popup.input.getContent())){
+                    if (isNaN($scope.popup.input.getContent())) {
                         // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
                         $scope.popup.input.label = 'PLEASE ENTER A NUMBER';
                         console.log($scope.popup.input.label);
                         $screen.render();
-                    }
-                    else{
+                    } else {
                         cart.push({
                             title: productDetail.Title,
                             asin: productDetail.ASIN,
@@ -154,7 +219,6 @@ var productDetailCntl = function ($scope, $screen, routeParams){
             });
             $scope.title.on('resize', setTitle);
 
-
             // TODO: onError einbauen
         }
     });
@@ -167,7 +231,7 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
     var searchIndex = routeParams.searchIndex;
 
     //we only can get 5 pages if we search in the 'all' category
-    var maxpages = searchIndex ? 10 : 5;
+    var maxpages = searchIndex ? searchIndex == 'All' ? 5 : 10 : 5;
 
     $scope.content.focus();
     amazon.queryProducts({
@@ -217,11 +281,11 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
 
             //Register this here so we cant go back and then the result comes in
             widgets.screen.key(['b'], RouteProvider.goBack);
-            widgets.screen.key(['h'], function(){
+            widgets.screen.key(['h'], function () {
                 RouteProvider.navigateTo('start');
             });
-            $scope.content.on('select', function(data, index){
-                RouteProvider.navigateTo('detail/asin=' +result.ASINs[index]);
+            $scope.content.on('select', function (data, index) {
+                RouteProvider.navigateTo('detail/asin=' + result.ASINs[index]);
             });
         },
         onError: function (errorMessage) {
@@ -235,25 +299,29 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
 
     $screen.render();
 
-
     $scope.popup.on('submit', RouteProvider.goBack);
 }
 
-var cartCntl = function ($scope, $screen, routeParams){
+var cartCntl = function ($scope, $screen, routeParams) {
     widgets.screen.key(['b'], RouteProvider.goBack);
     $scope.content.focus();
 
     // array tests
-    var test = [{name: 'toby', alter: 12}, {name: 'dani', alter: 13}];
+    var test = [{
+        name: 'toby',
+        alter: 12
+    }, {
+        name: 'dani',
+        alter: 13
+    }];
     var test2 = ['hi', 'jo'];
 
-    if(test.length > 0){
-        test.forEach(function(test){
+    if (test.length > 0) {
+        test.forEach(function (test) {
             $scope.content.addItem(test.name + '\n' + test.alter);
         })
         $screen.render();
-    }
-    else{
+    } else {
         // no list items to set
     }
 }
@@ -272,6 +340,12 @@ RouteProvider.loadPage = function (newPath, routeParams) {
         config = {
             controller: startpageCntl,
             view: './views/startpage'
+        }
+        break;
+    case 'browse':
+        config = {
+            controller: browseCntl,
+            view: './views/categoryBrowser'
         }
         break;
     case 'search':
