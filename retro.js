@@ -8,7 +8,7 @@ var retro = require('./lib/retro'),
 
 var startpageCntl = function ($scope, $screen) {
     fs.readFile(require('path').resolve(__dirname, './amazonAscii'), function (err, data) {
-        scope.content.setContent(String(data));
+        $scope.content.setContent(String(data));
         $screen.render();
     });
 
@@ -101,7 +101,8 @@ var browseCntl = function ($scope, $screen, routeParams) {
         widgets.screen.onceKey(['escape'], function () {
             //TODO: Somehow we dont get focus on the list anymore...
             //$scope.popup.input.clearValue();
-            $screen.hidePopuphidePopup();
+            $screen.hidePopup();
+            $scope.content.focus();
         })
         $scope.popup.once('submit', function () {
             var searchterm = $scope.popup.input.getContent();
@@ -205,12 +206,22 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
                         console.log($scope.popup.input.label);
                         $screen.render();
                     } else {
-                        cart.push({
-                            title: productDetail.Title,
-                            asin: productDetail.ASIN,
-                            price: productDetail.Price,
-                            quantity: $scope.popup.input.getContent()
+                        var producExists = false,
+                            quantity = parseInt($scope.popup.input.getContent(), 10);
+                        cart.forEach(function (product, index) {
+                            if (product.ASIN == productDetail.ASIN) {
+                                cart[index].Quantity += quantity;
+                                producExists = true;
+                            }
                         });
+                        if (!producExists) {
+                            cart.push({
+                                Title: productDetail.Title,
+                                ASIN: productDetail.ASIN,
+                                Price: productDetail.Price,
+                                Quantity: quantity
+                            });
+                        }
                         $scope.popup.input.clearValue();
                         $screen.hidePopup();
                     }
@@ -278,8 +289,8 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
 
                 //Limit title lenght to one line
                 var titleLenght = title.length;
-                title = title.substr(0, ($screen.width - 10));
-                if (titleLenght > ($screen.width - 10)) {
+                title = title.substr(0, ($screen.width - 19));
+                if (titleLenght > ($screen.width - 19)) {
                     title += '...';
                 }
 
@@ -287,14 +298,14 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
                 title += '\n';
 
                 //add price
-                if(price){
+                if (price) {
                     title += '{right}' + price + '{/right}';
                 }
 
                 return title;
             };
 
-            products = result
+            products = result;
             var formatAllTitles = function (products) {
                 var formattedTitles = [];
                 products.forEach(function (product) {
@@ -335,26 +346,176 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
 }
 
 var cartCntl = function ($scope, $screen, routeParams) {
-    widgets.screen.key(['b'], RouteProvider.goBack);
-    $scope.content.focus();
+    $scope.list.focus();
 
-    // array tests
-    var test = [{
-        name: 'toby',
-        alter: 12
-    }, {
-        name: 'dani',
-        alter: 13
-    }];
-    var test2 = ['hi', 'jo'];
+    var formatTitle = function (title, price, quantity) {
 
-    if (test.length > 0) {
-        test.forEach(function (test) {
-            $scope.content.addItem(test.name + '\n' + test.alter);
-        })
+        //Limit title lenght to one line
+        var titleLenght = title.length;
+        title = title.substr(0, ($scope.list.width - 10));
+        if (titleLenght > ($scope.list.width - 10)) {
+            title += '...';
+        }
+
+        //add new line
+        title += '\n';
+
+        //add price and quantity
+        if (price) {
+            title += '{right} Quantity: ' + quantity + ' ' + price + '{/right}';
+        } else {
+            title += '{right} Quantity: ' + quantity;
+        }
+
+        return title;
+    };
+
+    var formatAllTitles = function (products) {
+        var formattedTitles = [];
+        products.forEach(function (product) {
+            formattedTitles.push(formatTitle(product.Title, product.Price, product.Quantity));
+        });
+        return formattedTitles;
+    };
+
+    fs.readFile(require('path').resolve(__dirname, './cart'), function (err, data) {
+        $scope.cart.setContent(String(data));
         $screen.render();
+    });
+
+    widgets.screen.key(['b'], RouteProvider.goBack);
+
+    widgets.screen.key(['h'], function () {
+        RouteProvider.navigateTo('start');
+    });
+
+    if (cart.length > 0) {
+
+        /*
+         * Pagination
+         */
+        var entriesPerPage = 10;
+
+        var page = (~~routeParams.page) || 1;
+        var products = cart;
+
+        //we can show 20 items per page
+        var totalPages = Math.ceil(products.length / entriesPerPage);
+        var firstEntry = entriesPerPage * (page - 1);
+        var lastEntry = firstEntry + entriesPerPage;
+
+        //calculate all our items
+        var pageItems = products.slice(firstEntry, lastEntry);
+
+        if (page >= totalPages) {
+            $scope.hideNext();
+        } else {
+            //map or navigation key
+            widgets.screen.key(['n', 'space'], function () {
+                var nextPage = 'cart' +
+                    '/page=' + (~~page + 1);
+                RouteProvider.navigateTo(nextPage);
+            });
+        }
+
+        if (page <= 1) {
+            $scope.hidePrevious();
+        } else {
+            widgets.screen.key(['p'], function () {
+                var previousPage = 'cart' +
+                    '/page=' + (~~page - 1);
+                RouteProvider.navigateTo(previousPage);
+            });
+        }
+
+        if(totalPages == 1){
+            $scope.hideNextAndPrevious();
+        }
+
+        /*
+         * Content stuff
+         */
+        var setContent = function () {
+            $scope.content.on('resize', function () {
+                $scope.list.setItems(formatAllTitles(pageItems));
+                $screen.render();
+            });
+
+            $scope.list.setItems(formatAllTitles(pageItems));
+        }
+
+        var setInfo = function () {
+            var info = '',
+                totalQuantity = 0,
+                totalPrice = 0,
+                parsePrice = function (priceString) {
+                    if (priceString) {
+                        var priceParts = priceString.split(' ');
+                        var parsableString = priceParts[1].replace(',', '.');
+                        return parseFloat(parsableString, 10);
+                    } else {
+                        //We have no Price
+                        return 0;
+                    }
+
+                },
+                parseQuantity = function (quantityString) {
+                    return parseInt(quantityString, 10);
+                }
+
+            cart.forEach(function (product) {
+                var quantity = parseQuantity(product.Quantity),
+                    price = parsePrice(product.Price);
+                totalQuantity += quantity;
+                totalPrice += price * quantity;
+            });
+
+            $scope.info.setContent('Total quantity: ' + totalQuantity + '\n\nTotal Price: ' + totalPrice.toFixed(2) + '€');
+
+        }
+
+        setContent();
+        setInfo();
+
+        $screen.render();
+
+        $scope.list.on('select', function (data, index) {
+            $screen.showPopup();
+            $scope.popup.focusNext();
+            widgets.screen.onceKey(['escape'], function () {
+                $screen.hidePopup();
+            })
+            $scope.popup.input.setContent(new String(cart[index + ((page - 1) * entriesPerPage)].Quantity));
+            $screen.render();
+            $scope.popup.once('submit', function () {
+                // TODO: add to cart & hide popup
+                if (isNaN($scope.popup.input.getContent())) {
+                    // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
+                    $scope.popup.input.label = 'PLEASE ENTER A NUMBER';
+                    console.log($scope.popup.input.label);
+                    $screen.render();
+                } else {
+                    cart[index].Quantity = $scope.popup.input.getContent();
+                    $scope.popup.input.clearValue();
+                    $screen.hidePopup();
+                    $scope.list.focus();
+                    setContent();
+                    setInfo();
+                    $screen.render();
+                }
+                // TODO: empty input is not allowed to submit
+            })
+        });
+
+        widgets.screen.key(['d'], function () {
+            cart.splice($scope.list.selected + ((page - 1) * entriesPerPage), 1);
+            RouteProvider.navigateTo('cart' + 
+                '/page=' + page );
+        });
     } else {
         // no list items to set
+        $scope.list.append($scope.placeholder);
+        $screen.render();
     }
 }
 

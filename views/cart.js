@@ -10,7 +10,13 @@ scope.title = widgets.title({
     content: 'AMAZON - CART'
 });
 scope.commandbar = widgets.commandbar({
-    commands: ['{O}rder', '{RET}Edit quantity', '{C}lear', '{B}ack']
+    commands: ['', '', '{H}ome', '{B}ack']
+});
+
+scope.commandbar2 = widgets.commandbar({
+    parent: scope.commandbar,
+    commands: ['{O}rder', '{RET}Edit quantity', '{D}elete Item', ''],
+    bottom: 1
 });
 
 scope.content = blessed.box({
@@ -24,10 +30,14 @@ scope.content = blessed.box({
     width: '100%'
 });
 
-scope.content = blessed.list({
+scope.list = blessed.list({
     keys: true,
-    label: 'Search Results',
+    tags: true,
+    label: 'Cart',
+    parent: scope.content,
     style: {
+        bg: 'black',
+        fg: 'lightgreen',
         item: {
             //TODO: This simple fix wont work with scrolling lists, but we dont need them for now
             height: 2
@@ -42,10 +52,10 @@ scope.content = blessed.list({
         bg: 'black',
         fg: 'lightgreen'
     },
-    width: '100%',
     bottom: 1,
     top: 1,
     left: 0,
+    right: 30,
     scrollbar: {
         ch: ' ',
         track: {
@@ -57,13 +67,67 @@ scope.content = blessed.list({
     }
 });
 
+scope.placeholder = blessed.box({
+    content: "Nothing here yet\nAdd something!",
+    align: 'center',
+    top: '50%',
+    left: 1,
+    right: 1,
+    height: 2,
+    style: {
+        bg: 'black',
+        fg: 'lightgreen'
+    }
+});
+
+scope.info = blessed.box({
+    parent: scope.content,
+    top: 1,
+    bottom: 1,
+    right: 0,
+    width: 30,
+    style: {
+        bg: 'black',
+        fg: 'lightgreen'
+    },
+    border: {
+        type: 'ascii',
+        fg: 'lightgreen',
+        bg: 'black'
+    }
+});
+
+scope.cart = blessed.box({
+    parent : scope.info,
+    bottom: 1,
+    width: 20,
+    left: 5,
+    height: 9,
+    style: {
+        bg: 'black',
+        fg: 'lightgreen'
+    }
+});
+
 /*
  * POPUP STUFF
  */
 scope.popup = retro.Widgets.Popups.InputPopup({
-    label: 'ADD TO CART',
-    action: 'Add to cart',
+    label: 'EDIT QUANTITY',
+    action: 'Update',
     inputTitle: 'Enter the quantity'
 });
+
+scope.hidePrevious = function () {
+    scope.commandbar.setCommands(['', '{N}ext', '{H}ome', '{B}ack']);
+}
+
+scope.hideNext = function () {
+    scope.commandbar.setCommands(['{P}revious', '', '{H}ome', '{B}ack']);
+}
+
+scope.hideNextAndPrevious = function () {
+    scope.commandbar.setCommands(['', '', '{H}ome', '{B}ack']);
+}
 
 module.exports = scope;

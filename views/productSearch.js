@@ -19,6 +19,8 @@ scope.content = blessed.list({
     tags: true,
     label: 'Search Results',
     style: {
+        bg: 'black',
+        fg: 'lightgreen',
         item: {
             //TODO: This simple fix wont work with scrolling lists, but we dont need them for now
             height: 2
