@@ -25,10 +25,6 @@ var startpageCntl = function ($scope, $screen) {
         RouteProvider.navigateTo('search/searchterm=' + $scope.popup.input.value);
     });
 
-    widgets.screen.key(['k'], function () {
-        RouteProvider.navigateTo('errorPageDiesNichGibt');
-    });
-
     widgets.screen.key(['c'], function () {
         RouteProvider.navigateTo('cart');
     });
@@ -101,13 +97,12 @@ var browseCntl = function ($scope, $screen, routeParams) {
     $scope.content.on('select', function (data, index) {
         var searchIndex = allIndices[index];
         $screen.showPopup();
-        $scope.popup.focusNext();
+        $scope.popup.input.focus();
         widgets.screen.onceKey(['escape'], function () {
             //TODO: Somehow we dont get focus on the list anymore...
             //$scope.popup.input.clearValue();
             $screen.hidePopup();
-            $scope.content.focus();
-        })
+        });
         $scope.popup.once('submit', function () {
             var searchterm = $scope.popup.input.getContent();
             RouteProvider.navigateTo('search/searchterm=' + searchterm + '/searchIndex=' + searchIndex);
@@ -198,27 +193,29 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
             widgets.screen.key(['a'], function () {
                 // TODO: when to popup was closed and is reopened again the focus is missing
                 $screen.showPopup();
-                $scope.popup.focusNext();
+                $scope.popup.input.focus();
                 widgets.screen.onceKey(['escape'], function () {
                     $screen.hidePopup();
-                })
-                $scope.popup.once('submit', function () {
+                });
+                $scope.popup.on('submit', function () {
                     // TODO: add to cart & hide popup
-                    if (isNaN($scope.popup.input.getContent())) {
+                    if (isNaN($scope.popup.input.getContent()) || $scope.popup.input.getContent() == '') {
                         // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
-                        $scope.popup.input.label = 'PLEASE ENTER A NUMBER';
-                        console.log($scope.popup.input.label);
+                        $scope.popup.input.setContent('PLEASE ENTER A NUMBER');
+                        $scope.popup.input.focus();
                         $screen.render();
+                        $scope.popup.input.clearValue();
                     } else {
-                        var producExists = false,
+                        var productExists = false,
                             quantity = parseInt($scope.popup.input.getContent(), 10);
                         cart.forEach(function (product, index) {
                             if (product.ASIN == productDetail.ASIN) {
                                 cart[index].Quantity += quantity;
-                                producExists = true;
+                                productExists = true;
+                                return true;
                             }
                         });
-                        if (!producExists) {
+                        if (!productExists) {
                             cart.push({
                                 Title: productDetail.Title,
                                 ASIN: productDetail.ASIN,
@@ -228,6 +225,7 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
                         }
                         $scope.popup.input.clearValue();
                         $screen.hidePopup();
+                        $scope.popup.removeAllListeners('submit');
                     }
                     // TODO: empty input is not allowed to submit
                 })
@@ -293,7 +291,7 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
             if(totalPages == 1){
                 $scope.hideNextAndPrevious();
             }
-            
+
             var formatTitle = function (title, price) {
 
                 //Limit title lenght to one line
@@ -493,16 +491,18 @@ var cartCntl = function ($scope, $screen, routeParams) {
             $scope.popup.focusNext();
             widgets.screen.onceKey(['escape'], function () {
                 $screen.hidePopup();
+                $scope.list.focus();
             })
             $scope.popup.input.setContent(new String(cart[index + ((page - 1) * entriesPerPage)].Quantity));
             $screen.render();
-            $scope.popup.once('submit', function () {
+            $scope.popup.on('submit', function () {
                 // TODO: add to cart & hide popup
-                if (isNaN($scope.popup.input.getContent())) {
+                if (isNaN($scope.popup.input.getContent()) || $scope.popup.input.getContent() == '') {
                     // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
-                    $scope.popup.input.label = 'PLEASE ENTER A NUMBER';
-                    console.log($scope.popup.input.label);
+                    $scope.popup.input.setContent('PLEASE ENTER A NUMBER');
+                    $scope.popup.input.focus();
                     $screen.render();
+                    $scope.popup.input.clearValue();
                 } else {
                     cart[index].Quantity = $scope.popup.input.getContent();
                     $scope.popup.input.clearValue();
@@ -511,6 +511,7 @@ var cartCntl = function ($scope, $screen, routeParams) {
                     setContent();
                     setInfo();
                     $screen.render();
+                    $scope.popup.removeAllListeners('submit');
                 }
                 // TODO: empty input is not allowed to submit
             })
