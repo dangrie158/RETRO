@@ -168,10 +168,15 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
                     });
                 }
                 if (productDetail.ReleaseDate) {
-                    // TODO: format date
+                    var dateFormat = function(date) {
+                       var yyyy = date.getFullYear().toString();
+                       var mm = (date.getMonth()+1).toString(); // getMonth() is zero-based
+                       var dd  = date.getDate().toString();
+                       return (dd[1]?dd:"0"+dd[0]) + '/' + (mm[1]?mm:"0"+mm[0]) + '/' + yyyy; // padding
+                    };
                     var releaseDate = new Date(productDetail.ReleaseDate);
                     // releaseDate = releaseDate.format('%d.%m.%Y');
-                    release += 'Erscheinungsdatum: ' + releaseDate + '\n';
+                    release += 'Erscheinungsdatum: ' + dateFormat(releaseDate) + '\n';
                 }
                 if (productDetail.ProductGroup) {
                     group = 'Kategorie: ' + productDetail.ProductGroup + '\n';
