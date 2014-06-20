@@ -39,7 +39,7 @@ scope.description = blessed.box({
     scrollbar: {
         ch: ' ',
         track: {
-          bg: 'yellow'
+          bg: 'black'
         },
         style: {
           inverse: true

@@ -101,7 +101,7 @@ var browseCntl = function ($scope, $screen, routeParams) {
         widgets.screen.onceKey(['escape'], function () {
             //TODO: Somehow we dont get focus on the list anymore...
             //$scope.popup.input.clearValue();
-            $screen.hidePopup();
+            $screen.hidePopuphidePopup();
         })
         $scope.popup.once('submit', function () {
             var searchterm = $scope.popup.input.getContent();
@@ -274,9 +274,41 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
                     RouteProvider.navigateTo(previousPage);
                 });
             }
+            var formatTitle = function (title, price) {
 
-            titles = result.Titles;
-            $scope.content.setItems(titles);
+                //Limit title lenght to one line
+                var titleLenght = title.length;
+                title = title.substr(0, ($screen.width - 10));
+                if (titleLenght > ($screen.width - 10)) {
+                    title += '...';
+                }
+
+                //add new line
+                title += '\n';
+
+                //add price
+                if(price){
+                    title += '{right}' + price + '{/right}';
+                }
+
+                return title;
+            };
+
+            products = result
+            var formatAllTitles = function (products) {
+                var formattedTitles = [];
+                products.forEach(function (product) {
+                    formattedTitles.push(formatTitle(product.Title, product.Price));
+                });
+                return formattedTitles;
+            };
+
+            $scope.content.on('resize', function () {
+                $scope.content.setItems(formatAllTitles(products));
+                $screen.render();
+            });
+
+            $scope.content.setItems(formatAllTitles(products));
             $screen.render();
 
             //Register this here so we cant go back and then the result comes in

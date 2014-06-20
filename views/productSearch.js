@@ -14,8 +14,9 @@ scope.commandbar = widgets.commandbar({
 });
 
 scope.content = blessed.list({
-    align: 'center',
+    align: 'left',
     keys: true,
+    tags: true,
     label: 'Search Results',
     style: {
         item: {
