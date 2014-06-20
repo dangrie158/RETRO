@@ -53,7 +53,6 @@ scope.list = blessed.list({
         fg: 'lightgreen'
     },
     bottom: 1,
-    top: 1,
     left: 0,
     right: 30,
     scrollbar: {
@@ -82,7 +81,6 @@ scope.placeholder = blessed.box({
 
 scope.info = blessed.box({
     parent: scope.content,
-    top: 1,
     bottom: 1,
     right: 0,
     width: 30,

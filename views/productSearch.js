@@ -62,4 +62,8 @@ scope.hideNext = function () {
     scope.commandbar.setCommands(['{P}revious', '', '{H}ome', '{B}ack']);
 }
 
+scope.hideNextAndPrevious = function () {
+    scope.commandbar.setCommands(['', '', '{H}ome', '{B}ack']);
+}
+
 module.exports = scope;

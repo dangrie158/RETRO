@@ -86,6 +86,10 @@ var browseCntl = function ($scope, $screen, routeParams) {
         });
     }
 
+    if(totalPages == 1){
+        $scope.hideNextAndPrevious();
+    }
+
     $screen.render();
 
     widgets.screen.key(['b'], RouteProvider.goBack);
@@ -285,6 +289,11 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
                     RouteProvider.navigateTo(previousPage);
                 });
             }
+
+            if(totalPages == 1){
+                $scope.hideNextAndPrevious();
+            }
+            
             var formatTitle = function (title, price) {
 
                 //Limit title lenght to one line
