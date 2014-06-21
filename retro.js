@@ -526,6 +526,11 @@ var cartCntl = function ($scope, $screen, routeParams) {
 
         widgets.screen.key(['d'], function () {
             cart.splice($scope.list.selected + ((page - 1) * entriesPerPage), 1);
+            if(cart.length <= ((page - 1) * entriesPerPage)){
+                if(page > 1){
+                    page -= 1;
+                }
+            }
             RouteProvider.navigateTo('cart' + 
                 '/page=' + page );
         });
