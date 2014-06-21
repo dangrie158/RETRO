@@ -6,7 +6,7 @@ var retro = require('./lib/retro'),
     Route,
     cart = [];
 
-var startpageCntl = function ($scope, $screen) {
+var startpageCtrl = function ($scope, $screen) {
     fs.readFile(require('path').resolve(__dirname, './amazonAscii'), function (err, data) {
         $scope.content.setContent(String(data));
         $screen.render();
@@ -44,7 +44,7 @@ var startpageCntl = function ($scope, $screen) {
     });
 }
 
-var browseCntl = function ($scope, $screen, routeParams) {
+var browseCtrl = function ($scope, $screen, routeParams) {
     var entriesPerPage = 20;
 
     var page = (~~routeParams.page) || 1;
@@ -110,7 +110,7 @@ var browseCntl = function ($scope, $screen, routeParams) {
     });
 }
 
-var productDetailCntl = function ($scope, $screen, routeParams) {
+var productDetailCtrl = function ($scope, $screen, routeParams) {
     amazon.loadProduct({
         asin: routeParams.asin,
         onSuccess: function (productDetail) {
@@ -237,7 +237,7 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
 
         },
         onError: function (errorMessage) {
-            $scope.popup = $scope.error;
+            $screen.popup = $scope.error;
             $screen.showPopup();
             $scope.popup.content = errorMessage || 'An onknown error occured!';
             $screen.render();
@@ -248,7 +248,7 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
     });
 }
 
-var searchResultCntl = function ($scope, $screen, routeParams) {
+var searchResultCtrl = function ($scope, $screen, routeParams) {
     var page = (~~routeParams.page) || 1;
 
     var searchIndex = routeParams.searchIndex;
@@ -361,7 +361,7 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
     $scope.popup.on('submit', RouteProvider.goBack);
 }
 
-var cartCntl = function ($scope, $screen, routeParams) {
+var cartCtrl = function ($scope, $screen, routeParams) {
     $scope.list.focus();
 
     var formatTitle = function (title, price, quantity) {
@@ -494,8 +494,6 @@ var cartCntl = function ($scope, $screen, routeParams) {
         setInfo();
 
         $screen.render();
-
-
         $scope.list.on('select', function (data, index) {
             $screen.showPopup();
             $scope.popup.input.focus();
@@ -534,11 +532,100 @@ var cartCntl = function ($scope, $screen, routeParams) {
             RouteProvider.navigateTo('cart' + 
                 '/page=' + page );
         });
+        widgets.screen.key(['o'], function(){
+            RouteProvider.navigateTo('order');
+        });
     } else {
         // no list items to set
         $scope.list.append($scope.placeholder);
+        $scope.hideOrder();
         $screen.render();
     }
+}
+
+var orderCtrl = function($scope, $screen, routeParams){
+
+    fs.readFile(require('path').resolve(__dirname, './cart'), function (err, data) {
+        $scope.cart.setContent(String(data));
+        $screen.render();
+    });
+
+    var setInfo = function () {
+        var info = '',
+            totalQuantity = 0,
+            totalPrice = 0,
+            parsePrice = function (priceString) {
+                if (priceString) {
+                    var priceParts = priceString.split(' ');
+                    var parsableString = priceParts[1].replace(',', '.');
+                    return parseFloat(parsableString, 10);
+                } else {
+                    //We have no Price
+                    return 0;
+                }
+
+            },
+            parseQuantity = function (quantityString) {
+                return parseInt(quantityString, 10);
+            }
+
+        cart.forEach(function (product) {
+            var quantity = parseQuantity(product.Quantity),
+                price = parsePrice(product.Price);
+            totalQuantity += quantity;
+            totalPrice += price * quantity;
+        });
+
+        $scope.info.setContent('Total quantity: ' + totalQuantity + '\n\nTotal Price: ' + totalPrice.toFixed(2) + '€');
+    }
+
+    var setShippingMethod = function(method){
+        fs.readFile(require('path').resolve(__dirname, './' + method), function (err, data) {
+            $scope.shippingImage.setContent(String(data));
+            switch(method){
+                case 'pidgeon':
+                    $scope.shipping.setContent('carrier pidgeon');
+                    break;
+                case 'tube':
+                    $scope.shipping.setContent('tube mail');
+                    break;
+                default:
+                    $scope.shipping.setContent(method);
+                    break;
+            }
+            $screen.render();
+        });
+    }
+
+    setInfo();
+
+    setShippingMethod($scope.shippingMethods[0]);
+
+    $scope.form.focusNext();
+
+    $scope.shipping.on('press', function(){
+        $screen.showPopup();
+        $scope.popup.on('select', function(data, index){
+            setShippingMethod($scope.shippingMethods[index]);
+            $screen.hidePopup();
+            $scope.shipping.focus();
+        });
+    });
+
+    widgets.screen.key(['s'], function(){
+        $screen.popup = $scope.orderok;
+        $screen.showPopup();
+        cart = [];
+        $scope.orderok.on('submit', function(){
+            RouteProvider.navigateTo('start');
+        });
+    });
+
+    widgets.screen.key(['b'], RouteProvider.goBack);
+
+    widgets.screen.key(['h'], function () {
+        RouteProvider.navigateTo('start');
+    });
 }
 
 var errorCntrl = function ($scope, $screen) {
@@ -553,32 +640,38 @@ RouteProvider.loadPage = function (newPath, routeParams) {
         //The startPage
     case 'start':
         config = {
-            controller: startpageCntl,
+            controller: startpageCtrl,
             view: './views/startpage'
         }
         break;
     case 'browse':
         config = {
-            controller: browseCntl,
+            controller: browseCtrl,
             view: './views/categoryBrowser'
         }
         break;
     case 'search':
         config = {
-            controller: searchResultCntl,
+            controller: searchResultCtrl,
             view: './views/productSearch'
         }
         break;
     case 'detail':
         config = {
-            controller: productDetailCntl,
+            controller: productDetailCtrl,
             view: './views/productDetail'
         }
         break;
     case 'cart':
         config = {
-            controller: cartCntl,
+            controller: cartCtrl,
             view: './views/cart'
+        }
+        break;
+    case 'order':
+        config = {
+            controller: orderCtrl,
+            view: './views/order'
         }
         break;
     default:

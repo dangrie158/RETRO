@@ -127,4 +127,8 @@ scope.hideNextAndPrevious = function () {
     scope.commandbar.setCommands(['', '', '{H}ome', '{B}ack']);
 }
 
+scope.hideOrder = function () {
+    scope.commandbar2.setCommands(['', '{RET}Edit quantity', '{D}elete Item', '']);
+}
+
 module.exports = scope;
