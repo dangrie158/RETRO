@@ -239,7 +239,7 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
         onError: function (errorMessage) {
             $scope.popup = $scope.error;
             $screen.showPopup();
-            $screen.popup.content = errorMessage || 'An onknown error occured!';
+            $scope.popup.content = errorMessage || 'An onknown error occured!';
             $screen.render();
             $scope.popup.on('submit', function(){
                 RouteProvider.goBack();
@@ -349,9 +349,8 @@ var searchResultCntl = function ($scope, $screen, routeParams) {
             });
         },
         onError: function (errorMessage) {
-
             $screen.showPopup();
-            $screen.popup.content = errorMessage;
+            $scope.popup.content = errorMessage;
             $screen.render();
             widgets.screen.key(['b'], RouteProvider.goBack);
         }
