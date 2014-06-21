@@ -78,4 +78,8 @@ scope.popup = retro.Widgets.Popups.InputPopup({
     inputTitle: 'Enter the quantity'
 });
 
+scope.error = retro.Widgets.Popups.ErrorPopup({
+    label: 'ERROR'
+});
+
 module.exports = scope;

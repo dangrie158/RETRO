@@ -14,7 +14,7 @@ var startpageCntl = function ($scope, $screen) {
 
     widgets.screen.key(['s'], function () {
         $screen.showPopup();
-        $scope.popup.focusNext();
+        $scope.popup.input.focus();
         widgets.screen.onceKey(['escape'], function () {
             $scope.popup.input.clearValue();
             $screen.hidePopup();
@@ -98,10 +98,10 @@ var browseCntl = function ($scope, $screen, routeParams) {
         var searchIndex = allIndices[index];
         $screen.showPopup();
         $scope.popup.input.focus();
-        widgets.screen.onceKey(['escape'], function () {
-            //TODO: Somehow we dont get focus on the list anymore...
-            //$scope.popup.input.clearValue();
+        $scope.popup.key(['escape'], function () {
+            $scope.popup.input.clearValue();
             $screen.hidePopup();
+            $scope.content.focus();
         });
         $scope.popup.once('submit', function () {
             var searchterm = $scope.popup.input.getContent();
@@ -196,16 +196,13 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
                 RouteProvider.navigateTo('start');
             });
             widgets.screen.key(['a'], function () {
-                // TODO: when to popup was closed and is reopened again the focus is missing
                 $screen.showPopup();
                 $scope.popup.input.focus();
                 widgets.screen.onceKey(['escape'], function () {
                     $screen.hidePopup();
                 });
                 $scope.popup.on('submit', function () {
-                    // TODO: add to cart & hide popup
                     if (isNaN($scope.popup.input.getContent()) || $scope.popup.input.getContent() == '') {
-                        // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
                         $scope.popup.input.setContent('PLEASE ENTER A NUMBER');
                         $scope.popup.input.focus();
                         $screen.render();
@@ -232,12 +229,21 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
                         $screen.hidePopup();
                         $scope.popup.removeAllListeners('submit');
                     }
-                    // TODO: empty input is not allowed to submit
                 })
             });
             $scope.title.on('resize', setTitle);
 
-            // TODO: onError einbauen
+            
+
+        },
+        onError: function (errorMessage) {
+            $scope.popup = $scope.error;
+            $screen.showPopup();
+            $screen.popup.content = errorMessage || 'An onknown error occured!';
+            $screen.render();
+            $scope.popup.on('submit', function(){
+                RouteProvider.goBack();
+            })
         }
     });
 }
@@ -245,7 +251,6 @@ var productDetailCntl = function ($scope, $screen, routeParams) {
 var searchResultCntl = function ($scope, $screen, routeParams) {
     var page = (~~routeParams.page) || 1;
 
-    //TODO: for reusability
     var searchIndex = routeParams.searchIndex;
 
     //we only can get 5 pages if we search in the 'all' category
@@ -491,19 +496,18 @@ var cartCntl = function ($scope, $screen, routeParams) {
 
         $screen.render();
 
+
         $scope.list.on('select', function (data, index) {
             $screen.showPopup();
-            $scope.popup.focusNext();
-            widgets.screen.onceKey(['escape'], function () {
+            $scope.popup.input.focus();
+            $scope.popup.key(['escape'], function () {
                 $screen.hidePopup();
                 $scope.list.focus();
-            })
+            });
             $scope.popup.input.setContent(new String(cart[index + ((page - 1) * entriesPerPage)].Quantity));
             $screen.render();
             $scope.popup.on('submit', function () {
-                // TODO: add to cart & hide popup
                 if (isNaN($scope.popup.input.getContent()) || $scope.popup.input.getContent() == '') {
-                    // TODO: if not a number: error popup or new text in the label? the text is even with screen.render() not displayed
                     $scope.popup.input.setContent('PLEASE ENTER A NUMBER');
                     $scope.popup.input.focus();
                     $screen.render();
@@ -518,7 +522,6 @@ var cartCntl = function ($scope, $screen, routeParams) {
                     $screen.render();
                     $scope.popup.removeAllListeners('submit');
                 }
-                // TODO: empty input is not allowed to submit
             })
         });
 
