@@ -7,7 +7,7 @@ var retro = require('./lib/retro'),
     cart = [];
 
 var startpageCtrl = function ($scope, $screen) {
-    fs.readFile(require('path').resolve(__dirname, './amazonAscii'), function (err, data) {
+    fs.readFile(require('path').resolve(__dirname, './images/amazonAscii'), function (err, data) {
         $scope.content.setContent(String(data));
         $screen.render();
     });
@@ -34,13 +34,17 @@ var startpageCtrl = function ($scope, $screen) {
     });
 
     widgets.screen.key(['q'], function (ch, key) {
-        $screen.popup = $scope.closePopup;
-        $screen.showPopup();
-        $scope.closePopup.once('submit', process.exit);
-        $scope.closePopup.once('cancel', function () {
-            $screen.hidePopup();
-            $screen.popup = $scope.searchPopup;
-        });
+        if(cart.length > 0){
+            $screen.popup = $scope.closePopup;
+            $screen.showPopup();
+            $scope.closePopup.once('submit', process.exit);
+            $scope.closePopup.once('cancel', function () {
+                $screen.hidePopup();
+                $screen.popup = $scope.searchPopup;
+            });
+        }else{
+            process.exit(0);
+        }
     });
 }
 
@@ -198,7 +202,7 @@ var productDetailCtrl = function ($scope, $screen, routeParams) {
             widgets.screen.key(['a'], function () {
                 $screen.showPopup();
                 $scope.popup.input.focus();
-                widgets.screen.onceKey(['escape'], function () {
+                widgets.screen.key(['escape'], function () {
                     $screen.hidePopup();
                 });
                 $scope.popup.on('submit', function () {
@@ -394,7 +398,7 @@ var cartCtrl = function ($scope, $screen, routeParams) {
         return formattedTitles;
     };
 
-    fs.readFile(require('path').resolve(__dirname, './cart'), function (err, data) {
+    fs.readFile(require('path').resolve(__dirname, './images/cart'), function (err, data) {
         $scope.cart.setContent(String(data));
         $screen.render();
     });
@@ -538,14 +542,14 @@ var cartCtrl = function ($scope, $screen, routeParams) {
     } else {
         // no list items to set
         $scope.list.append($scope.placeholder);
-        $scope.hideOrder();
+        $scope.hideOrderAndDelete();
         $screen.render();
     }
 }
 
 var orderCtrl = function($scope, $screen, routeParams){
 
-    fs.readFile(require('path').resolve(__dirname, './cart'), function (err, data) {
+    fs.readFile(require('path').resolve(__dirname, './images/cart'), function (err, data) {
         $scope.cart.setContent(String(data));
         $screen.render();
     });
@@ -580,19 +584,9 @@ var orderCtrl = function($scope, $screen, routeParams){
     }
 
     var setShippingMethod = function(method){
-        fs.readFile(require('path').resolve(__dirname, './' + method), function (err, data) {
+        fs.readFile(require('path').resolve(__dirname, './images/' + method), function (err, data) {
             $scope.shippingImage.setContent(String(data));
-            switch(method){
-                case 'pidgeon':
-                    $scope.shipping.setContent('carrier pidgeon');
-                    break;
-                case 'tube':
-                    $scope.shipping.setContent('tube mail');
-                    break;
-                default:
-                    $scope.shipping.setContent(method);
-                    break;
-            }
+            $scope.shipping.setContent(method);
             $screen.render();
         });
     }
