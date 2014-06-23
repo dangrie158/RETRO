@@ -147,7 +147,7 @@ scope.shippingImage = blessed.box({
 });
 
 
-scope.shippingMethods = ['carrier pidgeon', 'train', 'tube mail'];
+scope.shippingMethods = ['carrier pigeon', 'train', 'tube mail'];
 
 scope.popup = blessed.list({
 	keys: true,
