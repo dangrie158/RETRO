@@ -624,7 +624,6 @@ var orderCtrl = function($scope, $screen, routeParams){
 
 var errorCntrl = function ($scope, $screen) {
     widgets.screen.key(['b'], RouteProvider.goBack);
-
 }
 
 //We extend the genearl Route Provider to navigate to where we want it
