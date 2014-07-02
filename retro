@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var retro = require('./lib/retro'),
     widgets = retro.Widgets,
     amazon = retro.API,
