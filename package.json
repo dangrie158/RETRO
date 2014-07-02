@@ -11,9 +11,7 @@
         "email": "tobiasschneider1989@gmail.com"
     }],
     "main": "retro.js",
-    "bin": {
-        "retro": "retro.js"
-    },
+    "bin": "./retro",
     "repository": {
         "type": "git",
         "url": "https://github.com/dangrie158/RETRO"
