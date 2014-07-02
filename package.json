@@ -1,0 +1,26 @@
+{
+    "name": "retro",
+    "version": "0.9.0",
+    "description": "A retro Amazon client",
+    "author": "Your Name <you.name@example.org>",
+    "contributors": [{
+        "name": "Daniel Grießhaber",
+        "email": "dangrie158@gmail.com"
+    }, {
+        "name": "Tobias Schneider",
+        "email": "tobiasschneider1989@gmail.com"
+    }],
+    "main": "retro.js",
+    "bin": {
+        "retro": "retro.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dangrie158/RETRO"
+    },
+    "dependencies": {
+        "blessed": "git+http://github.com/dangrie158/blessed#added-variable-item-height-for-lists",
+        "apac": "git+http://github.com/dangrie158/node-apac#German_Endpoint"
+    },
+    "private": true
+}
