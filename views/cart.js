@@ -9,6 +9,7 @@ scope = {};
 scope.title = widgets.title({
     content: 'AMAZON - CART'
 });
+
 scope.commandbar = widgets.commandbar({
     commands: ['', '', '{H}ome', '{B}ack']
 });

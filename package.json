@@ -2,7 +2,13 @@
     "name": "retro",
     "version": "0.9.0",
     "description": "A retro Amazon client",
-    "author": "Your Name <you.name@example.org>",
+    "author": [{
+        "name": "Daniel Grießhaber",
+        "email": "dangrie158@gmail.com"
+    }, {
+        "name": "Tobias Schneider",
+        "email": "tobiasschneider1989@gmail.com"
+    }],
     "contributors": [{
         "name": "Daniel Grießhaber",
         "email": "dangrie158@gmail.com"
@@ -10,7 +16,7 @@
         "name": "Tobias Schneider",
         "email": "tobiasschneider1989@gmail.com"
     }],
-    "main": "retro.js",
+    "main": "retro",
     "bin": "./retro",
     "repository": {
         "type": "git",
